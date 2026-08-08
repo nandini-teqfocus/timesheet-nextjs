@@ -60,9 +60,7 @@ export async function callSalesforceRestApi<T>(
   console.log(`[Salesforce Client Debug] Fetching URL: ${url}`);
   console.log(
     `[Salesforce Client Debug] Authorization Header: ${
-      headers['Authorization']
-        ? 'Bearer ' + headers['Authorization'].substring(7, 22) + '...'
-        : 'MISSING'
+      headers['Authorization'] ? 'PRESENT' : 'MISSING'
     }`,
   );
   /* eslint-enable no-console */
