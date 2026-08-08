@@ -5,3 +5,9 @@ export interface ServiceResponse<T> {
   dataJson?: string | null;
   errorCode?: string;
 }
+
+export interface SalesforceQueryResult<T> {
+  totalSize: number;
+  done: boolean;
+  records: T[];
+}

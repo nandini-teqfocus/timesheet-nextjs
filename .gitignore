@@ -3,7 +3,8 @@
 .sfdx/
 *.key
 *.pem
-*.log
+*.crt
+.secrets/
 .sfdx-project.json.backup
 
 # dependencies

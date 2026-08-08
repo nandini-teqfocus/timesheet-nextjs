@@ -115,7 +115,15 @@ export async function callSalesforceRestApi<T>(
     }
 
     const json = await response.json();
-    return json as ServiceResponse<T>;
+    if (json && typeof json === 'object' && ('success' in json)) {
+      return json as ServiceResponse<T>;
+    }
+
+    return {
+      success: true,
+      message: 'Salesforce API call successful',
+      data: json as T,
+    };
   } catch (error) {
     /* eslint-disable no-console */
     console.error(`[Salesforce Client Debug] Fetch exception:`, error);

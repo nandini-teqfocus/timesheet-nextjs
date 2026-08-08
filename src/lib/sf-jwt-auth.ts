@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
 
 export const runtime = 'nodejs';
 
@@ -22,17 +24,30 @@ export interface CachedToken {
 let cachedToken: CachedToken | null = null;
 
 /**
- * Normalizes a raw private key string from environment variables,
+ * Normalizes a raw private key string from environment variables or server secret files,
  * handling escaped newlines (\n) or raw multi-line PEM strings.
  */
 function getNormalizedPrivateKey(): string {
-  const rawKey = process.env.SALESFORCE_PRIVATE_KEY || '';
-  if (!rawKey) {
-    throw new Error('SALESFORCE_PRIVATE_KEY environment variable is not defined.');
+  let rawKey = process.env.SALESFORCE_PRIVATE_KEY || '';
+
+  // Fallback to local server secret files if environment variable is missing/empty
+  if (!rawKey.trim()) {
+    const secretsKeyPath = path.join(process.cwd(), '.secrets', 'server.key');
+    const rootKeyPath = path.join(process.cwd(), 'server.key');
+
+    if (fs.existsSync(secretsKeyPath)) {
+      rawKey = fs.readFileSync(secretsKeyPath, 'utf8');
+    } else if (fs.existsSync(rootKeyPath)) {
+      rawKey = fs.readFileSync(rootKeyPath, 'utf8');
+    }
+  }
+
+  if (!rawKey.trim()) {
+    throw new Error('SALESFORCE_PRIVATE_KEY environment variable is not defined and server.key file was not found.');
   }
 
   // Handle escaped newline strings in .env files
-  let formatted = rawKey.replace(/\\n/g, '\n');
+  let formatted = rawKey.replace(/\\n/g, '\n').trim();
 
   // If base64 encoded without PEM headers, wrap appropriately
   if (!formatted.includes('-----BEGIN PRIVATE KEY-----') && !formatted.includes('-----BEGIN RSA PRIVATE KEY-----')) {
