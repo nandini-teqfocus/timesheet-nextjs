@@ -1,4 +1,5 @@
 import { ServiceResponse } from '@/types/common.types';
+import { getSalesforceJwtAccessToken } from './sf-jwt-auth';
 
 const DEFAULT_INSTANCE_URL =
   process.env.SALESFORCE_INSTANCE_URL || 'https://time-sheet.my.salesforce.com';
@@ -10,15 +11,39 @@ export interface SalesforceClientOptions extends RequestInit {
 
 /**
  * Reusable server-side Salesforce REST API client.
- * Automatically injects OAuth Bearer Token and resolves target Salesforce instance URL.
+ * Automatically injects JWT Bearer Token and resolves target Salesforce instance URL.
  */
 export async function callSalesforceRestApi<T>(
   endpoint: string,
   options: SalesforceClientOptions = {},
 ): Promise<ServiceResponse<T>> {
-  const { accessToken, instanceUrl, ...fetchOptions } = options;
+  const { accessToken: explicitToken, instanceUrl: explicitInstanceUrl, ...fetchOptions } = options;
 
-  const baseUrl = (instanceUrl || DEFAULT_INSTANCE_URL).replace(/\/$/, '');
+  let activeToken = explicitToken;
+  let activeInstanceUrl = explicitInstanceUrl || DEFAULT_INSTANCE_URL;
+
+  // If no token was provided, automatically acquire via Salesforce JWT Bearer OAuth Flow
+  if (!activeToken) {
+    try {
+      const jwtCredentials = await getSalesforceJwtAccessToken();
+      activeToken = jwtCredentials.accessToken;
+      if (jwtCredentials.instanceUrl) {
+        activeInstanceUrl = jwtCredentials.instanceUrl;
+      }
+    } catch (jwtErr) {
+      /* eslint-disable no-console */
+      console.error('[Salesforce Client] JWT Bearer Authentication failed:', jwtErr);
+      /* eslint-enable no-console */
+      return {
+        success: false,
+        message: jwtErr instanceof Error ? jwtErr.message : 'Salesforce JWT Authentication failed',
+        data: null,
+        errorCode: 'JWT_AUTH_REQUIRED',
+      };
+    }
+  }
+
+  const baseUrl = activeInstanceUrl.replace(/\/$/, '');
   const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
   const headers: Record<string, string> = {
@@ -26,8 +51,8 @@ export async function callSalesforceRestApi<T>(
     ...(fetchOptions.headers as Record<string, string>),
   };
 
-  if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`;
+  if (activeToken) {
+    headers['Authorization'] = `Bearer ${activeToken}`;
   }
 
   /* eslint-disable no-console */

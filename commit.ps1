@@ -1,4 +1,3 @@
-git config user.name "Nandini Singh"
-git config user.email "nandini-teqfocus@users.noreply.github.com"
 git add .
-git commit -m "Initial commit: Salesforce DX metadata and Next.js Timesheet application"
+git commit -m "Feat: Implement Salesforce OAuth 2.0 JWT Bearer authentication flow"
+git push origin main
