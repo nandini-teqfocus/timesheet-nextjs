@@ -1,0 +1,92 @@
+<template>
+    <!-- skillsManager: Skills list manager -->
+    <div class="skills-manager-container">
+        <!-- Search bar -->
+        <div class="slds-m-bottom_medium">
+            <lightning-input
+                name="enter-search"
+                label="Search Skills"
+                type="search"
+                placeholder="Filter by skill name..."
+                value={searchTerm}
+                onchange={handleSearchChange}>
+            </lightning-input>
+        </div>
+
+        <!-- Skills registry display list -->
+        <template if:true={filteredSkills.length}>
+            <template for:each={mappedSkills} for:item="skill">
+                <div key={skill.id} class="slds-m-bottom_medium skill-item slds-p-around_small slds-box slds-theme_default box-shadow-small">
+                    <!-- Skill Labels & Level Badge & Delete action -->
+                    <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-bottom_xx-small">
+                        <div>
+                            <span class="slds-text-body_regular font-weight-bold slds-show_inline-block">{skill.name}</span>
+                            <span class="slds-text-body_small slds-text-color_weak slds-show" style="font-size: 0.75rem; margin-top: 1px;">{skill.category}</span>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <span class={skill.badgeClass}>{skill.proficiencyLevel}</span>
+                            <span class="slds-text-body_small slds-text-color_weak slds-m-left_small font-weight-bold">{skill.progress}%</span>
+                            
+                            <!-- Edit button -->
+                            <lightning-button-icon
+                                icon-name="utility:edit"
+                                variant="border-filled"
+                                size="small"
+                                alternative-text="Edit Skill"
+                                title="Edit Skill"
+                                class="slds-m-left_small"
+                                data-id={skill.id}
+                                onclick={handleEdit}>
+                            </lightning-button-icon>
+                            
+                            <!-- Delete button -->
+                            <lightning-button-icon
+                                icon-name="utility:delete"
+                                variant="border-filled"
+                                size="small"
+                                alternative-text="Delete Skill"
+                                title="Delete Skill"
+                                class="slds-m-left_small"
+                                data-id={skill.id}
+                                onclick={handleDelete}>
+                            </lightning-button-icon>
+                        </div>
+                    </div>
+                    
+                    <!-- Skill Progress Bar -->
+                    <div class="slds-progress-bar slds-progress-bar_medium progress-bar-radius" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={skill.progress}>
+                        <span class="slds-progress-bar__value" style={skill.progressStyle}>
+                            <span class="slds-assistive-text">Progress: {skill.progress}%</span>
+                        </span>
+                    </div>
+                </div>
+            </template>
+        </template>
+
+        <!-- Empty State if no skills registered at all -->
+        <template if:false={skills.length}>
+            <div class="skills-empty-state slds-text-align_center slds-p-vertical_xx-large slds-p-horizontal_medium">
+                <div class="empty-icon-wrap slds-m-bottom_medium">
+                    <lightning-icon icon-name="utility:user_role" size="large" class="empty-state-main-icon"></lightning-icon>
+                </div>
+                <h4 class="empty-state-title">Build Your Skills Registry</h4>
+                <p class="empty-state-message">Add your technical skills, certifications, and experience to complete your profile.</p>
+                <button class="add-skill-cta-btn slds-m-top_medium" onclick={handleAddSkillClick}>
+                    <lightning-icon icon-name="utility:add" size="x-small" class="add-icon-white slds-m-right_x-small"></lightning-icon>
+                    Register First Skill
+                </button>
+            </div>
+        </template>
+
+        <!-- Empty State if search yields no results -->
+        <template if:true={skills.length}>
+            <template if:false={filteredSkills.length}>
+                <c-empty-state 
+                    title="No Matching Skills Found" 
+                    message="Try adjusting your search criteria or register a new skill."
+                    icon-name="utility:search">
+                </c-empty-state>
+            </template>
+        </template>
+    </div>
+</template>

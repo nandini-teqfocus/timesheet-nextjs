@@ -1,0 +1,44 @@
+<template>
+  <div class="modal-backdrop" onclick={handleClose}></div>
+  <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-modal="true">
+    <div class="slds-modal__container">
+      <header class="slds-modal__header">
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleClose}>
+          <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+          <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 class="slds-modal__title slds-hyphenate">Add Recruiter Comment</h2>
+      </header>
+
+      <div class="slds-modal__content slds-p-around_medium">
+        <template if:true={isLoading}>
+          <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+        
+        <lightning-textarea
+          label="Comment"
+          placeholder="Enter your internal recruiter notes here..."
+          value={commentText}
+          onchange={handleCommentChange}
+          required
+          rows="5"
+        ></lightning-textarea>
+        
+        <div class="slds-m-top_small">
+          <lightning-input
+            type="checkbox"
+            label="Visible to Employee?"
+            checked={visibleToEmployee}
+            onchange={handleVisibilityChange}
+          ></lightning-input>
+        </div>
+      </div>
+
+      <footer class="slds-modal__footer">
+        <lightning-button label="Cancel" onclick={handleClose} class="slds-m-right_x-small"></lightning-button>
+        <lightning-button label="Add Comment" variant="brand" onclick={handleAddComment} disabled={isSubmitDisabled}></lightning-button>
+      </footer>
+    </div>
+  </section>
+  <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

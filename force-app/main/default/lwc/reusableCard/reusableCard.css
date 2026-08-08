@@ -1,0 +1,40 @@
+/* reusableCard — Premium Enterprise Card */
+
+.card-wrapper {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    border: 1px solid #e8ecf0;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.card-wrapper:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* Override SLDS card header for premium look */
+.card-wrapper .slds-card__header {
+    padding: 1rem 1.25rem 0.875rem;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.card-wrapper .slds-card__header-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #181c25;
+    letter-spacing: -0.01em;
+}
+
+.card-wrapper .slds-card__body_inner {
+    padding: 0.875rem 1.25rem;
+}
+
+.font-weight-bold {
+    font-weight: 700;
+}
+
+.card-footer-border {
+    border-top: 1px solid #f0f2f5;
+    background: #fafbfc;
+}

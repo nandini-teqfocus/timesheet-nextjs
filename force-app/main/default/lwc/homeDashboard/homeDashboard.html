@@ -1,0 +1,139 @@
+<template>
+    <!-- homeDashboard: Premium executive dashboard -->
+    <c-page-container title="Home Dashboard" subtitle="Weekly Overview" show-header="true">
+
+        <!-- Welcome Banner / Hero Section -->
+        <c-welcome-banner 
+            user-name={userName}
+            week-start={currentTimesheet.weekStart}
+            week-end={currentTimesheet.weekEnd}
+            logged-hours={currentTimesheet.totalHours}
+            billable-hours={currentTimesheet.billableHours}
+            utilization={utilizationPercentage}
+            onquicklog={handleQuickLog}
+            onsubmittimesheet={handleSubmitTimesheet}
+            onviewanalytics={handleViewAnalytics}>
+        </c-welcome-banner>
+
+        <!-- 4-Column KPI Metrics Row -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+            <template for:each={metrics} for:item="metric">
+                <div key={metric.id} class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+                    <c-metric-card
+                        title={metric.title}
+                        value={metric.value}
+                        icon={metric.icon}
+                        variant={metric.variant}
+                        trend={metric.trend}
+                        trend-up={metric.trendUp}>
+                    </c-metric-card>
+                </div>
+            </template>
+        </div>
+
+        <!-- 2-Column Body Layout -->
+        <div class="slds-grid slds-wrap slds-gutters">
+            <!-- Left: Weekly Hours Chart -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3 slds-m-bottom_medium">
+                <c-reusable-card title="Weekly Logged Hours" icon-name="utility:metrics">
+                    <div class="home-chart-area">
+                        <!-- Chart header: week summary pills -->
+                        <div class="home-chart-header">
+                            <div class="home-chart-stat-pill">
+                                <span class="home-chart-stat-dot" style="background:#0b5ed7"></span>
+                                <span class="home-chart-stat-label">Total</span>
+                                <span class="home-chart-stat-val">{weekTotalHoursStr}</span>
+                            </div>
+                            <div class="home-chart-stat-pill">
+                                <span class="home-chart-stat-dot" style="background:#00c9a7"></span>
+                                <span class="home-chart-stat-label">Billable</span>
+                                <span class="home-chart-stat-val">{weekBillableHoursStr}</span>
+                            </div>
+                            <span class="home-chart-week-label">Mon – Fri  ·  Current Week</span>
+                        </div>
+
+                        <!-- Modern SVG Bar Chart -->
+                        <div class="home-chart-svg-wrap">
+                            <svg viewBox="0 0 520 200" class="home-chart-svg" aria-label="Weekly logged hours bar chart" role="img" preserveAspectRatio="xMidYMid meet">
+                                <defs>
+                                    <linearGradient id="barGradBlue" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#3b82f6"/>
+                                        <stop offset="100%" stop-color="#0b5ed7"/>
+                                    </linearGradient>
+                                    <linearGradient id="barGradGreen" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#10d9a0"/>
+                                        <stop offset="100%" stop-color="#00c9a7"/>
+                                    </linearGradient>
+
+                                </defs>
+
+                                <!-- Background grid -->
+                                <line x1="48" y1="16" x2="504" y2="16" stroke="#eef2f7" stroke-width="1" stroke-dasharray="4 4"/>
+                                <line x1="48" y1="52" x2="504" y2="52" stroke="#eef2f7" stroke-width="1" stroke-dasharray="4 4"/>
+                                <line x1="48" y1="88" x2="504" y2="88" stroke="#eef2f7" stroke-width="1" stroke-dasharray="4 4"/>
+                                <line x1="48" y1="124" x2="504" y2="124" stroke="#eef2f7" stroke-width="1" stroke-dasharray="4 4"/>
+                                <line x1="48" y1="160" x2="504" y2="160" stroke="#d1d9e0" stroke-width="1"/>
+
+                                <!-- Y-axis labels -->
+                                <text x="40" y="19" text-anchor="end" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" font-weight="500">10h</text>
+                                <text x="40" y="55" text-anchor="end" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" font-weight="500">7.5h</text>
+                                <text x="40" y="91" text-anchor="end" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" font-weight="500">5h</text>
+                                <text x="40" y="127" text-anchor="end" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" font-weight="500">2.5h</text>
+                                <text x="40" y="163" text-anchor="end" font-size="10" fill="#94a3b8" font-family="Inter,sans-serif" font-weight="500">0h</text>
+
+                                <!-- Dynamic bars loop -->
+                                <template for:each={chartDays} for:item="day">
+                                    <g key={day.name}>
+                                        <!-- Total Hours Bar -->
+                                        <rect x={day.totalX} y={day.totalY} width="32" height={day.totalHeight} rx="5" fill="#3b82f6" opacity="0.92"/>
+                                        <!-- Billable Hours Bar -->
+                                        <rect x={day.billableX} y={day.billableY} width="32" height={day.billableHeight} rx="5" fill="#10d9a0" opacity="0.85"/>
+                                    </g>
+                                </template>
+
+                                <!-- X-axis day labels -->
+                                <text x="95" y="178" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter,sans-serif" font-weight="600">Mon</text>
+                                <text x="179" y="178" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter,sans-serif" font-weight="600">Tue</text>
+                                <text x="263" y="178" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter,sans-serif" font-weight="600">Wed</text>
+                                <text x="347" y="178" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter,sans-serif" font-weight="600">Thu</text>
+                                <text x="431" y="178" text-anchor="middle" font-size="11" fill="#64748b" font-family="Inter,sans-serif" font-weight="600">Fri</text>
+                            </svg>
+                        </div>
+
+                        <!-- Legend row -->
+                        <div class="home-chart-legend">
+                            <div class="home-legend-item">
+                                <span class="home-legend-dot" style="background:linear-gradient(135deg,#3b82f6,#0b5ed7)"></span>
+                                <span class="home-legend-lbl">Total Hours</span>
+                            </div>
+                            <div class="home-legend-item">
+                                <span class="home-legend-dot" style="background:linear-gradient(135deg,#10d9a0,#00c9a7)"></span>
+                                <span class="home-legend-lbl">Billable Hours</span>
+                            </div>
+                            <span class="home-chart-total-badge">
+                                Week Total: <strong>{weekTotalHoursStr}</strong>
+                            </span>
+                        </div>
+                    </div>
+                </c-reusable-card>
+            </div>
+
+            <!-- Right: Recent Activities -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-m-bottom_medium">
+                <c-reusable-card title="Recent Activities" icon-name="utility:activity" has-footer="true">
+                    <c-activity-timeline activities={activities}></c-activity-timeline>
+                    <lightning-button-stateful
+                        variant="text"
+                        state-type="filled"
+                        label-when-off="View All History"
+                        onclick={handleLoadMoreActivities}
+                        slot="footer">
+                    </lightning-button-stateful>
+                </c-reusable-card>
+            </div>
+        </div>
+
+        <!-- Custom Toast container -->
+        <c-toast-message title={toastTitle} message={toastMessage} variant={toastVariant} duration="3000"></c-toast-message>
+    </c-page-container>
+</template>

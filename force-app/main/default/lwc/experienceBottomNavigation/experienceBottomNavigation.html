@@ -1,0 +1,59 @@
+<template>
+    <template lwc:if={showNavigation}>
+        <div class="experience-bottom-nav-container">
+            <div class="experience-bottom-nav slds-grid slds-grid_align-spread slds-align-middle">
+                <template for:each={bottomNavItems} for:item="item">
+                    <button 
+                        key={item.id} 
+                        class={item.class} 
+                        data-page={item.id} 
+                        onclick={handleNavClick}>
+                        <div class="nav-item-content slds-grid slds-grid_vertical slds-grid_align-center slds-align-middle">
+                            <lightning-icon 
+                                icon-name={item.icon} 
+                                size="small" 
+                                class="nav-icon">
+                            </lightning-icon>
+                            <span class="nav-label slds-text-body_small">{item.label}</span>
+                        </div>
+                    </button>
+                </template>
+
+                <!-- Profile/Logout Account Button -->
+                <div class="profile-popover-container">
+                    <button class={profileBtnClass} onclick={toggleProfilePopover}>
+                        <div class="nav-item-content slds-grid slds-grid_vertical slds-grid_align-center slds-align-middle">
+                            <lightning-icon 
+                                icon-name="utility:identity" 
+                                size="small" 
+                                class="nav-icon">
+                            </lightning-icon>
+                            <span class="nav-label slds-text-body_small">Account</span>
+                        </div>
+                    </button>
+
+                    <!-- Clean floating mini profile panel/popover -->
+                    <template if:true={isProfileOpen}>
+                        <div class="profile-popover animate-popover-up" role="dialog" aria-label="Account Menu">
+                            <div class="popover-arrow"></div>
+                            <div class="popover-body">
+                                <div class="user-profile-details">
+                                    <div class="user-avatar-initials">{userInitials}</div>
+                                    <div class="user-text-info">
+                                        <h3 class="user-popover-name">{userName}</h3>
+                                        <p class="user-popover-role">{userRole}</p>
+                                    </div>
+                                </div>
+                                <div class="popover-divider"></div>
+                                <button class="logout-action-btn" onclick={handleLogoutClick}>
+                                    <lightning-icon icon-name="utility:logout" size="xx-small" class="logout-icon"></lightning-icon>
+                                    <span>Logout</span>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

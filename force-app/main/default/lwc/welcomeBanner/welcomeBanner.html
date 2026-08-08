@@ -1,0 +1,66 @@
+<template>
+    <!-- welcomeBanner: Premium hero welcome section -->
+    <div class="hero-banner slds-m-bottom_large">
+        <!-- Background pattern dots -->
+        <div class="hero-pattern" aria-hidden="true"></div>
+
+        <div class="hero-content">
+            <!-- Left: Avatar + Greeting -->
+            <div class="hero-left">
+                <div class="hero-avatar-wrap">
+                    <div class="hero-avatar">
+                        <abbr class="hero-initials" title={userName}>{userInitials}</abbr>
+                    </div>
+                    <div class="status-dot" title="Active"></div>
+                </div>
+                <div class="hero-text">
+                    <p class="hero-greeting">{greeting} 👋</p>
+                    <h1 class="hero-name">{userName}</h1>
+                    <p class="hero-sub">
+                        Week of <strong>{currentWeekRange}</strong>
+                        <span class="hero-date-badge">
+                            <lightning-icon icon-name="utility:event" size="xx-small"></lightning-icon>
+                            {currentDate}
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Weekly stats -->
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="stat-value">{formattedLoggedHours}</span>
+                    <span class="stat-label">Logged</span>
+                </div>
+                <div class="stat-divider" aria-hidden="true"></div>
+                <div class="hero-stat">
+                    <span class="stat-value">{formattedBillableHours}</span>
+                    <span class="stat-label">Billable</span>
+                </div>
+                <div class="stat-divider" aria-hidden="true"></div>
+                <div class="hero-stat">
+                    <span class="stat-value">{formattedUtilization}</span>
+                    <span class="stat-label">Utilization</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Row -->
+        <div class="hero-actions">
+            <button class="quick-action-btn primary" onclick={handleSubmitTimesheet}>
+                <lightning-icon icon-name="utility:send" size="x-small"></lightning-icon>
+                Submit Timesheet
+            </button>
+            <button class="quick-action-btn secondary" onclick={handleViewAnalytics}>
+                <lightning-icon icon-name="utility:chart" size="x-small"></lightning-icon>
+                Analytics
+            </button>
+        </div>
+
+        <!-- Insight pill -->
+        <div class="hero-insight">
+            <lightning-icon icon-name="utility:einstein" size="xx-small" class="insight-icon"></lightning-icon>
+            <span class="insight-text">Your utilization is up <strong>12%</strong> from last month — great work! 🚀</span>
+        </div>
+    </div>
+</template>

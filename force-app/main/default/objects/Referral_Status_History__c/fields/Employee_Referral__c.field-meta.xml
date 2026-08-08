@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Employee_Referral__c</fullName>
+    <description>Links this status history record to its parent Employee Referral</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The referral this status change belongs to</inlineHelpText>
+    <label>Employee Referral</label>
+    <referenceTo>Employee_Referral__c</referenceTo>
+    <relationshipLabel>Referral Status History</relationshipLabel>
+    <relationshipName>Referral_Status_History</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

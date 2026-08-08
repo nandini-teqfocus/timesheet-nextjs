@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Skills__c</fullName>
+    <description>A detailed list of the candidate&apos;s professional skills, competencies, and technical expertise.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the candidate&apos;s key skills, separated by commas (e.g., Java, Python, Project Management, Salesforce).</inlineHelpText>
+    <label>Skills</label>
+    <length>2000</length>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>8</visibleLines>
+</CustomField>

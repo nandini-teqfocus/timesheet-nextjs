@@ -1,0 +1,5 @@
+/* weeklyChart component styles */
+.chart-container {
+    position: relative;
+    height: 200px;
+}

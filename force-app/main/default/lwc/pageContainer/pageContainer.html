@@ -1,0 +1,55 @@
+<template>
+    <!-- pageContainer: Standard enterprise page structure -->
+    <article class="slds-card slds-card_boundary page-container-card">
+        <!-- Conditional LWC loading spinner overlay -->
+        <template lwc:if={isLoading}>
+            <c-loading-spinner size="medium" alternative-text="Loading page content..."></c-loading-spinner>
+        </template>
+
+        <!-- Standard SLDS page header section -->
+        <template lwc:if={showHeader}>
+            <div class="slds-page-header slds-page-header_record-home page-header-border">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-timesheet">
+                                    <lightning-icon icon-name="standard:timesheet" size="medium" alternative-text="Page Icon"></lightning-icon>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-page-header__name">
+                                    <div class="slds-page-header__name-title">
+                                        <h1>
+                                            <span class="slds-text-title_caps slds-line-height_reset" lwc:if={subtitle}>{subtitle}</span>
+                                            <span class="slds-page-header__title slds-truncate" title={title}>{title}</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top right actions slot -->
+                    <div class="slds-page-header__col-actions">
+                        <div class="slds-page-header__controls">
+                            <div class="slds-page-header__control-item">
+                                <slot name="actions"></slot>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optional secondary details slot (meta statistics) -->
+                <div class="slds-page-header__row slds-page-header__row_gutters">
+                    <slot name="info"></slot>
+                </div>
+            </div>
+        </template>
+
+        <!-- Body content wrapper -->
+        <div class="slds-card__body slds-card__body_inner slds-p-vertical_medium">
+            <slot></slot>
+        </div>
+    </article>
+</template>

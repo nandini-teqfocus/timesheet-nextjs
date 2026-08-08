@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Max_Referrals_Per_Employee__c</fullName>
+    <description>Maximum number of active referrals allowed per employee</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Set the limit for how many active referrals an employee can submit simultaneously (0 = unlimited)</inlineHelpText>
+    <label>Max Referrals Per Employee</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

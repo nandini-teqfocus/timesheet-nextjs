@@ -1,0 +1,347 @@
+/* Recruiter Workspace Styles - Modern ATS Theme */
+
+.workspace-header {
+  background: linear-gradient(135deg, #f8fafc, #eff6ff);
+  padding: 1.75rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+}
+
+.workspace-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #1e3a8a; /* Soft, deep corporate blue */
+}
+
+.workspace-subtitle {
+  font-size: 0.95rem;
+  color: #475569; /* Inviting slate grey */
+  margin-top: 0.25rem;
+}
+
+/* Analytics Cards CSS */
+.stats-container {
+  display: flex;
+  width: 100%;
+}
+
+.recruiter-stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.recruiter-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.recruiter-stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.recruiter-stat-card.total::after { background: #3b82f6; }
+.recruiter-stat-card.active::after { background: #f59e0b; }
+.recruiter-stat-card.interview::after { background: #a855f7; }
+.recruiter-stat-card.hired::after { background: #10b981; }
+.recruiter-stat-card.pending::after { background: #64748b; }
+
+.stat-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.stat-icon-wrapper.total {
+  background: rgba(59, 130, 246, 0.1);
+  --sds-c-icon-color-foreground: #3b82f6;
+}
+.stat-icon-wrapper.active {
+  background: rgba(245, 158, 11, 0.1);
+  --sds-c-icon-color-foreground: #d97706;
+}
+.stat-icon-wrapper.interview {
+  background: rgba(168, 85, 247, 0.1);
+  --sds-c-icon-color-foreground: #8b5cf6;
+}
+.stat-icon-wrapper.hired {
+  background: rgba(16, 185, 129, 0.1);
+  --sds-c-icon-color-foreground: #10b981;
+}
+.stat-icon-wrapper.pending {
+  background: rgba(100, 116, 139, 0.1);
+  --sds-c-icon-color-foreground: #475569;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.15rem;
+}
+
+/* Tabs Container Styling */
+.tabs-container {
+  background: #ffffff;
+  padding: 0.5rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.slds-tabs_default__nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slds-tabs_default__item {
+  margin: 0;
+}
+
+.slds-tabs_default__link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slds-tabs_default__link:hover {
+  color: #0f172a;
+  background-color: #f1f5f9;
+}
+
+.slds-tabs_default__link.slds-is-active {
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.2);
+  font-weight: 700;
+}
+
+.tab-count-badge {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+}
+
+.slds-is-active .tab-count-badge {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+/* Sticky / Floating Bulk Actions Bar */
+.bulk-actions-floating-bar {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #bbf7d0;
+  border-radius: 14px;
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1), 0 4px 6px -2px rgba(16, 185, 129, 0.05);
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  position: sticky;
+  top: 1rem;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.bulk-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #14532d;
+}
+
+.bulk-badge {
+  background-color: #16a34a;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(22, 163, 74, 0.2);
+}
+
+.actions-btn-group .slds-button {
+  --sds-c-button-brand-color-background-outline-hover: #16a34a;
+  --sds-c-button-brand-color-border-outline: #16a34a;
+  --sds-c-button-brand-color-text-outline: #16a34a;
+  --sds-c-button-brand-color-text-outline-hover: #ffffff;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .slds-tabs_default__nav {
+    flex-wrap: wrap;
+  }
+  
+  .slds-tabs_default__link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Clickable Interactive Pointer for Analytics cards */
+.recruiter-stat-card {
+  cursor: pointer;
+}
+
+/* Precise Close (X) Positioning */
+.slds-modal__close,
+button.slds-modal__close {
+  position: absolute !important;
+  top: 1.25rem !important;
+  right: 1.5rem !important;
+  z-index: 9999 !important;
+  color: #64748b !important;
+  --sds-c-icon-color-foreground: #64748b !important;
+  --sds-c-icon-color-foreground-default: #64748b !important;
+}
+
+.slds-modal__close:hover,
+button.slds-modal__close:hover {
+  color: #0f172a !important;
+  --sds-c-icon-color-foreground: #0f172a !important;
+}
+
+/* Drilldown Reusable Modal overrides */
+.drilldown-modal .slds-modal__container {
+  max-width: 78rem !important;
+  width: 85% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  height: 100% !important;
+}
+
+.drilldown-modal .slds-modal__content {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 12rem) !important;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9000;
+}
+
+.slds-modal {
+  z-index: 9001;
+}
+
+.slds-backdrop {
+  display: none !important;
+}
+
+/* Premium Modal Header Banner */
+.modal-header-banner {
+  background: linear-gradient(135deg, #f8fafc, #eff6ff);
+  color: #0f172a;
+  padding: 1.5rem 2rem;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  position: relative;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.modal-header-banner .slds-modal__title {
+  color: #1e3a8a;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.modal-header-banner .slds-page-header__name-meta {
+  color: #475569;
+  font-weight: 600;
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+}
+
+.candidate-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+  border: 2px solid #e2e8f0;
+  --sds-c-icon-color-foreground: #ffffff;
+}
+
+.sticky-footer {
+  border-top: 1.5px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.02);
+}

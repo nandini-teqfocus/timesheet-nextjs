@@ -1,0 +1,15 @@
+<template>
+    <div class="table-container slds-is-relative">
+        <lightning-datatable
+            key-field={keyField}
+            data={data}
+            columns={columns}
+            hide-checkbox-column={hideCheckboxColumn}
+            sorted-by={sortedBy}
+            sorted-direction={sortedDirection}
+            onsort={handleSort}
+            onrowaction={handleRowAction}
+            onrowselection={handleRowSelection}>
+        </lightning-datatable>
+    </div>
+</template>

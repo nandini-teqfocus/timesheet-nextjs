@@ -1,0 +1,129 @@
+<template>
+    <div class="team-list-container animate-fade-in">
+        <!-- Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading Subordinates..." size="medium" variant="brand"></lightning-spinner>
+        </template>
+
+        <!-- Premium KPI Strip -->
+        <div class="kpi-grid slds-m-bottom_large">
+            <!-- Total Subordinates -->
+            <div class="glass-card kpi-card blue">
+                <div class="kpi-icon-wrapper">
+                    <lightning-icon icon-name="utility:groups" size="medium"></lightning-icon>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-label">Subordinates</div>
+                    <div class="kpi-value">{totalSubordinates}</div>
+                </div>
+            </div>
+
+            <!-- Avg Utilization -->
+            <div class="glass-card kpi-card purple">
+                <div class="kpi-icon-wrapper">
+                    <lightning-icon icon-name="utility:metrics" size="medium"></lightning-icon>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-label">Avg Utilization</div>
+                    <div class="kpi-value">{avgUtilization}%</div>
+                </div>
+            </div>
+
+            <!-- Overtime Flag -->
+            <div class="glass-card kpi-card rose">
+                <div class="kpi-icon-wrapper">
+                    <lightning-icon icon-name="utility:warning" size="medium"></lightning-icon>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-label">Overtime (>40h)</div>
+                    <div class="kpi-value">{overtimeCount}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Card Container -->
+        <div class="glass-card main-panel">
+            <!-- Search & Filters -->
+            <div class="search-filter-section">
+                <div class="header-text-block">
+                    <h1 class="panel-heading">Subordinate Directory</h1>
+                    <p class="panel-subheading">Supervise and monitor weekly hours, allocation, and utilization metrics for your team members.</p>
+                </div>
+                <div class="search-input-wrap">
+                    <lightning-input 
+                        type="search" 
+                        variant="label-hidden" 
+                        placeholder="Search team members by name, title, or department..." 
+                        value={searchKey}
+                        onchange={handleSearchChange}
+                        class="search-bar">
+                    </lightning-input>
+                </div>
+            </div>
+
+            <!-- Employee Grid -->
+            <template if:true={hasEmployees}>
+                <div class="employee-grid">
+                    <template for:each={filteredSubordinates} for:item="emp">
+                        <div key={emp.id} class="employee-card animate-card-load" data-id={emp.id} onclick={handleSelectEmployee}>
+                            <!-- Card Header -->
+                            <div class="emp-header">
+                                <div class="avatar-wrapper">
+                                    <div class="avatar-circle">{emp.initials}</div>
+                                    <span class="pulse-indicator active" title="Active"></span>
+                                </div>
+                                <div class="emp-info">
+                                    <h3 class="emp-name">{emp.name}</h3>
+                                    <p class="emp-title">{emp.title}</p>
+                                    <span class="emp-dept">{emp.department}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Card Stats Section -->
+                            <div class="emp-body-stats">
+                                <div class="stat-row">
+                                    <div class="stat-column">
+                                        <span class="stat-lbl">Hours Tracked</span>
+                                        <span class="stat-val">{emp.totalHours} hrs</span>
+                                    </div>
+                                    <div class="stat-column text-right">
+                                        <span class="stat-lbl">Billable</span>
+                                        <span class="stat-val">{emp.billableHours} hrs</span>
+                                    </div>
+                                </div>
+
+                                <!-- Utilization Progress Bar -->
+                                <div class="utilization-progress-wrap">
+                                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                                        <span class="progress-lbl">Utilization</span>
+                                        <span class="progress-pct {emp.rateClass}">{emp.utilizationRate}%</span>
+                                    </div>
+                                    <div class="slds-progress-bar slds-progress-bar_x-small progress-track" aria-valuemin="0" aria-valuemax="100" role="progressbar">
+                                        <span class="slds-progress-bar__value" style={emp.progressWidthStyle}></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Action Footer Trigger -->
+                            <div class="card-action-bar">
+                                <span class="action-text">Audit Timesheets</span>
+                                <lightning-icon icon-name="utility:chevronright" size="xx-small" class="action-icon"></lightning-icon>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template if:false={hasEmployees}>
+                <div class="empty-state">
+                    <div class="empty-icon-wrap">
+                        <lightning-icon icon-name="utility:people" size="large" class="empty-icon"></lightning-icon>
+                    </div>
+                    <h3 class="empty-title">No subordinates found</h3>
+                    <p class="empty-desc">We couldn't find any team members matching your search criteria.</p>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

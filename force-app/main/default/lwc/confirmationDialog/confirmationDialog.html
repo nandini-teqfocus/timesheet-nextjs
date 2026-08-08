@@ -1,0 +1,40 @@
+<template>
+    <template lwc:if={isOpen}>
+        <!-- Backdrop background mask -->
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+
+        <!-- Dialog layout -->
+        <section 
+            role="alertdialog" 
+            tabindex="-1" 
+            aria-modal="true" 
+            aria-describedby="prompt-message-wrapper" 
+            aria-labelledby="prompt-heading-id" 
+            class="slds-modal slds-fade-in-open slds-modal_prompt">
+            
+            <div class="slds-modal__container">
+                <!-- Modal Header -->
+                <header class={headerClass}>
+                    <h2 id="prompt-heading-id" class="slds-modal__title slds-hyphenate slds-text-heading_medium font-weight-bold slds-text-color_inverse">
+                        {title}
+                    </h2>
+                </header>
+
+                <!-- Modal Body scrollable panel -->
+                <div class="slds-modal__content slds-p-around_medium" id="prompt-message-wrapper">
+                    <p class="slds-text-align_center slds-text-body_regular">{message}</p>
+                </div>
+
+                <!-- Modal Footer -->
+                <footer class="slds-modal__footer slds-theme_default">
+                    <button class="slds-button slds-button_neutral slds-m-right_small" onclick={handleCancel}>
+                        {cancelLabel}
+                    </button>
+                    <button class={confirmButtonClass} onclick={handleConfirm}>
+                        {confirmLabel}
+                    </button>
+                </footer>
+            </div>
+        </section>
+    </template>
+</template>

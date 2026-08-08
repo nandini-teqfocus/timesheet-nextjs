@@ -1,0 +1,39 @@
+<template>
+    <!-- activityTimeline: Premium enterprise activity feed -->
+    <div class="activity-timeline">
+        <template if:true={hasActivities}>
+            <ul class="timeline-list" role="list">
+                <template for:each={mappedActivities} for:item="act">
+                    <li key={act.id} class="timeline-entry" role="listitem">
+                        <!-- Vertical connector line (hidden on last child via CSS) -->
+                        <div class="timeline-connector" aria-hidden="true"></div>
+
+                        <!-- Icon badge -->
+                        <div class="timeline-badge">
+                            <lightning-icon
+                                icon-name={act.iconName}
+                                size="xx-small"
+                                class={act.iconClass}>
+                            </lightning-icon>
+                        </div>
+
+                        <!-- Content body -->
+                        <div class="timeline-body">
+                            <p class="timeline-desc">{act.description}</p>
+                            <time class="timeline-time">{act.displayTime}</time>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </template>
+
+        <!-- Empty State if no activities -->
+        <template if:false={hasActivities}>
+            <c-empty-state
+                title="No Recent Activities"
+                message="Your recent timesheet activity log will be displayed here."
+                icon-name="utility:activity">
+            </c-empty-state>
+        </template>
+    </div>
+</template>

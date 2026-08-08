@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Posted_By__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>User who originally posted or owns publication of this job posting.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the user responsible for posting this job.</inlineHelpText>
+    <label>Posted By</label>
+    <referenceTo>User</referenceTo>
+    <relationshipLabel>Job Postings Posted</relationshipLabel>
+    <relationshipName>Posted_Job_Postings</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

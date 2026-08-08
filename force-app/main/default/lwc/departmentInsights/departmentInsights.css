@@ -1,0 +1,403 @@
+/* Executive Header Settings */
+.department-header {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05) !important;
+    padding: 2rem 2.5rem !important;
+    margin-bottom: 2.5rem !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.department-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.08), transparent 70%);
+    pointer-events: none;
+}
+
+.header-icon-container {
+    background: #eef2ff;
+    border: 1px solid #e0e7ff;
+    border-radius: 12px;
+    padding: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --sds-c-icon-color-foreground: #4f46e5 !important;
+}
+
+.department-header .slds-page-header__title {
+    color: #0f172a !important;
+    font-size: 1.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.5px;
+}
+
+.department-header .slds-page-header__name-meta {
+    color: #64748b !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    margin-top: 0.25rem;
+}
+
+/* Spinner Loading State */
+.loading-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #475569;
+    letter-spacing: 0.2px;
+}
+
+/* KPI Summary Cards - Glass/Modern Theme */
+.kpi-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08), 0 4px 8px -4px rgba(0, 0, 0, 0.04);
+    border-color: #cbd5e1;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+}
+
+.accent-blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.accent-purple::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.accent-indigo::before { background: linear-gradient(90deg, #4f46e5, #818cf8); }
+.accent-green::before { background: linear-gradient(90deg, #10b981, #34d399); }
+.accent-amber::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+
+.kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+}
+
+.kpi-icon-wrapper {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-blue { background-color: #eff6ff; --sds-c-icon-color-foreground: #3b82f6; }
+.icon-purple { background-color: #f5f3ff; --sds-c-icon-color-foreground: #8b5cf6; }
+.icon-indigo { background-color: #eef2ff; --sds-c-icon-color-foreground: #4f46e5; }
+.icon-green { background-color: #ecfdf5; --sds-c-icon-color-foreground: #10b981; }
+.icon-amber { background-color: #fffbeb; --sds-c-icon-color-foreground: #d97706; }
+
+.kpi-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    margin-top: auto;
+}
+
+.kpi-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.5rem;
+}
+
+/* Executive Spotlight Cards */
+.spotlight-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.75rem 2rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.spotlight-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08);
+}
+
+.champion-spotlight { border-left: 6px solid #f59e0b; }
+.active-spotlight { border-left: 6px solid #3b82f6; }
+
+.spotlight-badge {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    background-color: #f1f5f9;
+    color: #475569;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+}
+
+.spotlight-figure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    margin-right: 1.5rem;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.fig-gold { background-color: #fffbeb; }
+.fig-blue { background-color: #eff6ff; }
+.spotlight-icon-gold { --sds-c-icon-color-foreground: #d97706 !important; }
+.spotlight-icon-blue { --sds-c-icon-color-foreground: #2563eb !important; }
+
+.spotlight-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.5px;
+}
+
+.spotlight-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.3px;
+}
+
+.spotlight-stat {
+    font-size: 0.95rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+.highlight-val {
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 1.1rem;
+}
+
+/* Department Performance Cards Grid */
+.dept-performance-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.dept-performance-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+    border-color: #cbd5e1;
+}
+
+.card-header {
+    border-bottom: 1px solid #f1f5f9;
+    padding: 1.25rem 1.5rem;
+    background-color: #ffffff;
+    border-radius: 12px 12px 0 0;
+}
+
+.dept-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.3px;
+}
+
+.dept-subtitle {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-top: 0.2rem;
+    letter-spacing: 0.2px;
+}
+
+/* Demand Badges */
+.badge-demand {
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.badge-demand::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.badge-high { background-color: #fef2f2; color: #991b1b; }
+.badge-high::before { background-color: #ef4444; }
+
+.badge-medium { background-color: #fffbeb; color: #92400e; }
+.badge-medium::before { background-color: #f59e0b; }
+
+.badge-low { background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+.badge-low::before { background-color: #94a3b8; }
+
+/* Body Stats */
+.card-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+    background-color: #fafafa;
+}
+
+.stats-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.stat-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem 0.5rem;
+}
+
+.border-right { border-right: 1px solid #f1f5f9; }
+.border-bottom { border-bottom: 1px solid #f1f5f9; }
+
+.stat-num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+}
+
+.stat-success {
+    color: #059669;
+}
+
+.stat-lbl {
+    font-size: 0.7rem;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 0.5rem;
+    letter-spacing: 0.3px;
+}
+
+/* Conversion Tracker Progress Bar */
+.conversion-tracker {
+    margin-top: 1.5rem;
+}
+
+.conversion-lbl {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.conversion-val {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.progress-bar-container {
+    height: 6px;
+    background-color: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5 0%, #38bdf8 100%);
+    border-radius: 9999px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Footer Section */
+.card-footer {
+    border-top: 1px solid #f1f5f9;
+    padding: 1rem 1.5rem;
+    background-color: #ffffff;
+    border-radius: 0 0 12px 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.trend-indicator {
+    display: inline-flex;
+    align-items: center;
+}
+
+.text-success { color: #059669; }
+.text-warning { color: #d97706; }
+
+.footer-trend-icon {
+    --sds-c-icon-color-foreground: #059669 !important;
+}
+
+.funnel-efficiency-label {
+    color: #64748b;
+}
+
+/* Empty State Styles */
+.empty-state {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    padding: 4rem 2rem !important;
+}
+
+.empty-icon {
+    --sds-c-icon-color-foreground: #94a3b8;
+}
+
+.empty-title {
+    font-weight: 800;
+    color: #0f172a;
+}

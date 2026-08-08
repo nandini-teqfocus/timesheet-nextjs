@@ -1,0 +1,31 @@
+/* pageContainer — Premium Page Wrapper */
+
+.page-container-card {
+    position: relative;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.04);
+    background: #ffffff;
+    border: 1px solid #e8ecf0;
+    overflow: hidden;
+}
+
+.page-header-border {
+    border-bottom: 1px solid #f0f2f5;
+    background: linear-gradient(180deg, #fafbff 0%, #ffffff 100%);
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+}
+
+.page-header-border .slds-page-header__title {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: #181c25;
+    letter-spacing: -0.015em;
+}
+
+.page-header-border .slds-text-title_caps {
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    color: #8492a6;
+    font-weight: 600;
+}

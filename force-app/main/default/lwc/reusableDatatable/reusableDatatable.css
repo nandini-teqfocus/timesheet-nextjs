@@ -1,0 +1,23 @@
+.table-container {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(15, 23, 42, 0.03);
+    background-color: #ffffff;
+}
+
+:host {
+    --slds-c-datatable-header-color-background: #f8fafc;
+    --slds-c-datatable-header-text-color: #475569;
+    --slds-c-datatable-header-color-border: #e2e8f0;
+    --slds-c-datatable-row-color-border: #f1f5f9;
+    --slds-c-datatable-row-color-background-hover: #f8fafc;
+    --slds-c-datatable-row-font-size: 0.8125rem;
+    --slds-c-datatable-spacing-block-start: 12px;
+    --slds-c-datatable-spacing-block-end: 12px;
+    --slds-c-datatable-text-color: #0f172a;
+}
+
+.font-weight-bold {
+    font-weight: 700;
+}

@@ -1,0 +1,206 @@
+<template>
+    <!-- Executive Premium Header Banner -->
+    <div class="department-header">
+        <div class="slds-grid slds-grid_vertical-align-center">
+            <div class="slds-col slds-grow-none">
+                <div class="header-icon-container slds-m-right_medium">
+                    <lightning-icon icon-name="standard:channel_programs" size="large"></lightning-icon>
+                </div>
+            </div>
+            <div class="slds-col">
+                <h1 class="slds-page-header__title slds-truncate" title="Department Performance Analytics">Department Performance Analytics</h1>
+                <p class="slds-page-header__name-meta">Talent Acquisition & Employee Referral Performance by Business Unit</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spinner Loading State -->
+    <template if:true={isLoading}>
+        <div class="slds-is-relative slds-p-vertical_xx-large slds-text-align_center">
+            <lightning-spinner alternative-text="Gathering department analytics..." size="medium" variant="brand"></lightning-spinner>
+            <p class="slds-m-top_large loading-text">Syncing live performance data...</p>
+        </div>
+    </template>
+
+    <template if:false={isLoading}>
+        <!-- Executive Overview KPI Summary Cards -->
+        <div class="slds-grid slds-wrap slds-m-bottom_large">
+            <!-- Card 1: Total Business Units -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-p-around_small">
+                <div class="kpi-card accent-blue">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper icon-blue">
+                            <lightning-icon icon-name="utility:groups" size="small"></lightning-icon>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{totalDepartments}</div>
+                    <div class="kpi-label">Business Units</div>
+                </div>
+            </div>
+            <!-- Card 2: Open Headcounts -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-p-around_small">
+                <div class="kpi-card accent-purple">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper icon-purple">
+                            <lightning-icon icon-name="utility:case" size="small"></lightning-icon>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{totalOpenJobs}</div>
+                    <div class="kpi-label">Open Headcounts</div>
+                </div>
+            </div>
+            <!-- Card 3: Total Referrals -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-p-around_small">
+                <div class="kpi-card accent-indigo">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper icon-indigo">
+                            <lightning-icon icon-name="utility:forward" size="small"></lightning-icon>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{totalReferrals}</div>
+                    <div class="kpi-label">Referrals Received</div>
+                </div>
+            </div>
+            <!-- Card 4: Hires Completed -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-p-around_small">
+                <div class="kpi-card accent-green">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper icon-green">
+                            <lightning-icon icon-name="utility:check" size="small"></lightning-icon>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{totalHired}</div>
+                    <div class="kpi-label">Hires Completed</div>
+                </div>
+            </div>
+            <!-- Card 5: Avg Conversion -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-p-around_small">
+                <div class="kpi-card accent-amber">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper icon-amber">
+                            <lightning-icon icon-name="utility:outcome" size="small"></lightning-icon>
+                        </div>
+                    </div>
+                    <div class="kpi-value">{averageConversionRate}%</div>
+                    <div class="kpi-label">Avg. Conversion Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Executive Leaderboard Spotlight (Highly Interactive Top Performing Sections) -->
+        <lightning-layout multiple-rows="true" pull-to-boundary="small" class="slds-m-bottom_x-large">
+            <!-- Left Highlight Card: Conversion Champion -->
+            <lightning-layout-item size="12" medium-device-size="6" padding="around-small">
+                <div class="spotlight-card champion-spotlight">
+                    <div class="spotlight-badge">Leaderboard Spotlight</div>
+                    <div class="slds-media slds-media_center">
+                        <div class="slds-media__figure spotlight-figure fig-gold">
+                            <lightning-icon icon-name="utility:trophy" size="medium" class="spotlight-icon-gold"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h3 class="spotlight-title">Conversion Leader</h3>
+                            <p class="spotlight-name">{topPerformingDept}</p>
+                            <p class="spotlight-stat">
+                                <span class="highlight-val">{topPerformingRate}%</span> referral-to-hire conversion efficiency
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </lightning-layout-item>
+            <!-- Right Highlight Card: Most Active Referral Channel -->
+            <lightning-layout-item size="12" medium-device-size="6" padding="around-small">
+                <div class="spotlight-card active-spotlight">
+                    <div class="spotlight-badge">Engagement Leader</div>
+                    <div class="slds-media slds-media_center">
+                        <div class="slds-media__figure spotlight-figure fig-blue">
+                            <lightning-icon icon-name="utility:trending_up" size="medium" class="spotlight-icon-blue"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <h3 class="spotlight-title">Most Active Channel</h3>
+                            <p class="spotlight-name">{mostActiveDept}</p>
+                            <p class="spotlight-stat">
+                                <span class="highlight-val">{mostActiveCount}</span> total candidate referrals logged
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <!-- Detailed Performance Grid -->
+        <lightning-layout multiple-rows="true" pull-to-boundary="small">
+            <template for:each={departmentData} for:item="dept">
+                <lightning-layout-item key={dept.name} size="12" medium-device-size="6" large-device-size="4" padding="around-small">
+                    <div class="dept-performance-card">
+                        
+                        <!-- Top Header -->
+                        <div class="card-header slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                            <div class="slds-truncate" style="max-width: 65%;">
+                                <h3 class="dept-title slds-truncate" title={dept.name}>{dept.name}</h3>
+                                <p class="dept-subtitle">Hiring Status & Conversion</p>
+                            </div>
+                            <div class="slds-grow-none">
+                                <span class={dept.demandBadgeClass}>{dept.demand} Demand</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body Stats -->
+                        <div class="card-body">
+                            <div class="slds-grid slds-wrap slds-m-bottom_medium stats-container">
+                                <!-- Stat 1: Open Job Posts -->
+                                <div class="slds-col slds-size_1-of-2 border-right border-bottom stat-block">
+                                    <div class="stat-num">{dept.openJobs}</div>
+                                    <div class="stat-lbl">Open Jobs</div>
+                                </div>
+                                <!-- Stat 2: Referrals Logged -->
+                                <div class="slds-col slds-size_1-of-2 border-bottom stat-block">
+                                    <div class="stat-num">{dept.totalReferrals}</div>
+                                    <div class="stat-lbl">Referrals</div>
+                                </div>
+                                <!-- Stat 3: Interviews Conducted -->
+                                <div class="slds-col slds-size_1-of-2 border-right stat-block">
+                                    <div class="stat-num">{dept.interviews}</div>
+                                    <div class="stat-lbl">Interviews</div>
+                                </div>
+                                <!-- Stat 4: Successful Hires -->
+                                <div class="slds-col slds-size_1-of-2 stat-block">
+                                    <div class="stat-num stat-success">{dept.totalHired}</div>
+                                    <div class="stat-lbl">Hires</div>
+                                </div>
+                            </div>
+
+                            <!-- Conversion Rate Tracker -->
+                            <div class="conversion-tracker">
+                                <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                                    <span class="conversion-lbl">Conversion Efficiency</span>
+                                    <span class="conversion-val">{dept.conversionRate}%</span>
+                                </div>
+                                <!-- Progress Bar -->
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" style={dept.progressStyle}></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Details -->
+                        <div class="card-footer slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                            <span class="trend-indicator text-success">
+                                <lightning-icon icon-name="utility:trending_up" size="x-small" class="slds-m-right_x-small footer-trend-icon"></lightning-icon>
+                                Stable Funnel
+                            </span>
+                            <span class="funnel-efficiency-label">Active Hiring</span>
+                        </div>
+                    </div>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+
+        <template if:false={departmentData.length}>
+            <div class="empty-state slds-text-align_center slds-m-vertical_xx-large">
+                <lightning-icon icon-name="utility:company" size="large" class="empty-icon slds-m-bottom_medium"></lightning-icon>
+                <h3 class="slds-text-heading_medium empty-title">No Department Analytics Available</h3>
+                <p class="slds-text-body_regular slds-text-color_weak slds-m-top_small">Data will populate automatically as job posts and referrals are registered.</p>
+            </div>
+        </template>
+    </template>
+</template>

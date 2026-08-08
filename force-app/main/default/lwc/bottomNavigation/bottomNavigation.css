@@ -1,0 +1,81 @@
+/* bottomNavigation — Premium Mobile Floating Dock */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    height: 64px;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 32px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.04);
+    padding: 0 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bottom-nav:hover {
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18);
+    transform: translateY(-2px);
+}
+
+.bottom-nav-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.bottom-nav-item {
+    flex: 1;
+    height: 48px;
+    max-width: 72px;
+    text-decoration: none !important;
+    color: #64748b;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    gap: 2px;
+    border-radius: 24px;
+}
+
+.bottom-nav-item:hover {
+    color: #0f172a;
+    background-color: rgba(15, 23, 42, 0.03);
+}
+
+.bottom-nav-item.active {
+    color: #0b5ed7;
+    background-color: #eff6ff;
+    font-weight: 600;
+}
+
+.bottom-nav-icon {
+    --slds-c-icon-color-foreground: #64748b !important;
+    --sds-c-icon-color-foreground: #64748b !important;
+    --sds-c-icon-color-foreground-default: #64748b !important;
+    color: #64748b !important;
+    transition: transform 0.2s ease;
+}
+
+.bottom-nav-item.active .bottom-nav-icon {
+    --slds-c-icon-color-foreground: #0b5ed7 !important;
+    --sds-c-icon-color-foreground: #0b5ed7 !important;
+    --sds-c-icon-color-foreground-default: #0b5ed7 !important;
+    color: #0b5ed7 !important;
+    transform: scale(1.1);
+}
+
+.bottom-nav-label {
+    font-weight: 600;
+    font-size: 9px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closing_Date_After_Posted_Date</fullName>
+    <active>true</active>
+    <description>Ensures that the Closing Date is after the Posted Date</description>
+    <errorConditionFormula>AND(
+    NOT(ISBLANK(Posted_Date__c)),
+    NOT(ISBLANK(Closing_Date__c)),
+    Closing_Date__c &lt;= Posted_Date__c
+)</errorConditionFormula>
+    <errorDisplayField>Closing_Date__c</errorDisplayField>
+    <errorMessage>Closing Date must be after Posted Date.</errorMessage>
+</ValidationRule>

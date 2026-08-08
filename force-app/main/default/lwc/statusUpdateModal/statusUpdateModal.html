@@ -1,0 +1,37 @@
+<template>
+  <!-- Status Update Modal -->
+  <div class="modal-backdrop" onclick={handleClose}></div>
+  <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-modal="true">
+    <div class="slds-modal__container">
+      <header class="slds-modal__header">
+        <button
+          class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+          title="Close"
+          onclick={handleClose}
+        >
+          <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+          <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 class="slds-modal__title">Update Status</h2>
+      </header>
+      <div class="slds-modal__content slds-p-around_medium">
+        <template if:true={isLoading}>
+          <lightning-spinner alternative-text="Updating" size="medium"></lightning-spinner>
+        </template>
+        <lightning-combobox
+          name="status"
+          label="New Status"
+          value={selectedStatus}
+          options={statusOptions}
+          onchange={handleStatusChange}
+          placeholder="Select status..."
+        ></lightning-combobox>
+      </div>
+      <div class="slds-modal__footer">
+        <lightning-button label="Cancel" onclick={handleClose} variant="neutral" class="slds-m-right_x-small"></lightning-button>
+        <lightning-button label="Update" onclick={handleUpdate} variant="brand"></lightning-button>
+      </div>
+    </div>
+  </section>
+  <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

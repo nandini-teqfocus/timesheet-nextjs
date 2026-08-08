@@ -1,0 +1,275 @@
+<template>
+    <div class="viewer-container animate-fade-in">
+        <div class="glass-card main-panel">
+            
+            <!-- Executive Dashboard Header -->
+            <div class="selector-header">
+                <div class="header-text-group">
+                    <div class="slds-media slds-media_center">
+                        <div class="slds-media__figure">
+                            <div class="header-icon-container animate-bounce-subtle">
+                                <lightning-icon icon-name="standard:timesheet" size="medium" class="header-icon"></lightning-icon>
+                            </div>
+                        </div>
+                        <div class="slds-media__body">
+                            <h1 class="panel-heading">Team Timesheets Console</h1>
+                            <p class="panel-subheading">Supervisor Audit Mode &bull; Track and analyze subordinate logged hours.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Supervisor Selector Control Panel -->
+                <div class="control-panel-card">
+                    <div class="control-panel-inner">
+                        <div class="control-icon-container">
+                            <lightning-icon icon-name="utility:user" size="small" class="control-user-icon"></lightning-icon>
+                        </div>
+                        <div class="control-fields">
+                            <lightning-combobox
+                                name="employeeSelector"
+                                label="Subordinate Scope"
+                                value={selectedEmployeeId}
+                                placeholder="Select team member..."
+                                options={employeeOptions}
+                                onchange={handleEmployeeChange}
+                                class="combobox-custom"
+                                variant="label-stacked">
+                            </lightning-combobox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Selected Subordinate KPI Cards Strip -->
+            <template if:true={selectedEmployeeId}>
+                <template if:false={isLoadingTimesheets}>
+                    <div class="emp-kpis-strip slds-m-bottom_large animate-fade-in">
+                        <!-- Identity Card -->
+                        <div class="kpi-mini-card user-info-card">
+                            <div class="avatar-circle">{selectedEmployeeInitials}</div>
+                            <div class="kpi-details">
+                                <span class="kpi-lbl">Audited Employee</span>
+                                <span class="kpi-emp-name">{selectedEmployeeName}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Logged Hours Card -->
+                        <div class="kpi-mini-card card-blue">
+                            <div class="kpi-icon-wrap">
+                                <lightning-icon icon-name="utility:clock" size="small" class="icon-blue"></lightning-icon>
+                            </div>
+                            <div class="kpi-details">
+                                <span class="kpi-lbl">Total Hours Logged</span>
+                                <span class="kpi-val">{empTotalHours}h</span>
+                            </div>
+                        </div>
+
+                        <!-- Avg Utilization Card -->
+                        <div class="kpi-mini-card card-purple">
+                            <div class="kpi-icon-wrap">
+                                <lightning-icon icon-name="utility:metrics" size="small" class="icon-purple"></lightning-icon>
+                            </div>
+                            <div class="kpi-details">
+                                <span class="kpi-lbl">Avg Utilization</span>
+                                <span class="kpi-val">{empAvgUtilization}%</span>
+                            </div>
+                        </div>
+
+                        <!-- Billable Hours Card -->
+                        <div class="kpi-mini-card card-green">
+                            <div class="kpi-icon-wrap">
+                                <lightning-icon icon-name="utility:chart" size="small" class="icon-green"></lightning-icon>
+                            </div>
+                            <div class="kpi-details">
+                                <span class="kpi-lbl">Billable Hours</span>
+                                <span class="kpi-val">{empBillableHours}h</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </template>
+
+            <!-- Spinner -->
+            <template if:true={isLoadingTimesheets}>
+                <div class="slds-p-around_xx-large slds-align_absolute-center spinner-container">
+                    <lightning-spinner alternative-text="Loading Timesheets..." size="medium" variant="brand"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Timesheets Table -->
+            <template if:false={isLoadingTimesheets}>
+                <template if:true={hasTimesheets}>
+                    <div class="table-container animate-fade-in">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Week Starting</th>
+                                    <th>Week Ending</th>
+                                    <th>Total Logged</th>
+                                    <th>Billable Hours</th>
+                                    <th class="slds-text-align_right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={timesheets} for:item="ts">
+                                    <tr key={ts.Id} class="table-row-hover">
+                                        <td>
+                                            <div class="slds-grid slds-grid_vertical-align-center">
+                                                <div class="date-icon-container slds-m-right_small">
+                                                    <lightning-icon icon-name="utility:date_input" size="x-small" class="date-icon"></lightning-icon>
+                                                </div>
+                                                <strong class="date-text">{ts.formattedStartDate}</strong>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-grid slds-grid_vertical-align-center">
+                                                <div class="date-icon-container slds-m-right_small">
+                                                    <lightning-icon icon-name="utility:date_input" size="x-small" class="date-icon"></lightning-icon>
+                                                </div>
+                                                <strong class="date-text">{ts.formattedEndDate}</strong>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="highlight-hours">{ts.totalHours} hrs</span>
+                                        </td>
+                                        <td>
+                                            <span class="billable-text">{ts.billableHours} hrs</span>
+                                        </td>
+                                        <td class="slds-text-align_right">
+                                            <button 
+                                                class="btn-audit"
+                                                data-id={ts.Id}
+                                                onclick={handleViewEntries}>
+                                                <lightning-icon icon-name="utility:preview" size="xx-small" class="btn-icon"></lightning-icon>
+                                                <span>Audit Logs</span>
+                                                <span class="chevron-slide">&rarr;</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+
+                <!-- Empty State -->
+                <template if:false={hasTimesheets}>
+                    <template if:true={selectedEmployeeId}>
+                        <div class="empty-state">
+                            <div class="empty-icon-wrap">
+                                <lightning-icon icon-name="utility:open_folder" size="large" class="empty-icon"></lightning-icon>
+                            </div>
+                            <h3 class="empty-title">No timesheets found</h3>
+                            <p class="empty-desc">This subordinate employee has no weekly timesheet logs recorded yet.</p>
+                        </div>
+                    </template>
+                </template>
+            </template>
+        </div>
+
+        <!-- Detail Modal -->
+        <template if:true={isModalOpen}>
+            <div class="modal-backdrop animate-fade-in">
+                <div class="modal-content scale-up">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Timesheet Audit &mdash; {selectedEmployeeName}</h2>
+                        <lightning-button-icon 
+                            icon-name="utility:close" 
+                            variant="border-filled" 
+                            alternative-text="Close" 
+                            class="close-btn"
+                            onclick={handleCloseModal}>
+                        </lightning-button-icon>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <!-- Meta Info Grid -->
+                        <div class="meta-grid">
+                            <div class="meta-item border-blue">
+                                <span class="meta-lbl">Week Starting</span>
+                                <span class="meta-val">{currentTimesheet.formattedStartDate}</span>
+                            </div>
+                            <div class="meta-item border-slate">
+                                <span class="meta-lbl">Week Ending</span>
+                                <span class="meta-val">{currentTimesheet.formattedEndDate}</span>
+                            </div>
+                            <div class="meta-item border-slate-grey">
+                                <span class="meta-lbl">Total Hours</span>
+                                <span class="meta-val">{currentTimesheet.totalHours} hrs</span>
+                            </div>
+                            <div class="meta-item border-green">
+                                <span class="meta-lbl">Billable Hours</span>
+                                <span class="meta-val">{currentTimesheet.billableHours} hrs</span>
+                            </div>
+                            <div class="meta-item border-purple">
+                                <span class="meta-lbl">Utilization</span>
+                                <span class="meta-val">{currentTimesheet.utilization}%</span>
+                            </div>
+                        </div>
+
+                        <!-- Entries Spinner -->
+                        <template if:true={isLoadingEntries}>
+                            <div class="slds-p-around_xx-large slds-align_absolute-center spinner-container">
+                                <lightning-spinner alternative-text="Loading Entries..." size="small" variant="brand"></lightning-spinner>
+                            </div>
+                        </template>
+
+                        <!-- Entries Table -->
+                        <template if:false={isLoadingEntries}>
+                            <template if:true={hasEntries}>
+                                <div class="table-container">
+                                    <table class="table-custom">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Project Details</th>
+                                                <th>Category</th>
+                                                <th>Hours</th>
+                                                <th>Billing Status</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={timesheetEntries} for:item="entry">
+                                                <tr key={entry.Id} class="table-row-hover">
+                                                    <td class="cell-date"><strong>{entry.formattedDate}</strong></td>
+                                                    <td>
+                                                        <div class="project-wrap">
+                                                            <div class="proj-name">{entry.projectName}</div>
+                                                            <div class="proj-code">Code: {entry.projectCode}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="category-tag">{entry.category}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="highlight-hours font-sm">{entry.hours} hrs</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class={entry.billableClass}>{entry.billableLabel}</span>
+                                                    </td>
+                                                    <td class="cell-wrap">{entry.description}</td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                            <template if:false={hasEntries}>
+                                <div class="empty-state slds-p-around_medium">
+                                    <p class="slds-text-color_weak">No detailed entry records logged for this weekly timesheet.</p>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn-close-audit" onclick={handleCloseModal}>
+                            Close Audit View
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

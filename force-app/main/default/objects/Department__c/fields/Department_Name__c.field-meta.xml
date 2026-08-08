@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Department_Name__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>The official name of the department within the organization.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the full department name (e.g., Engineering, Sales, Human Resources).</inlineHelpText>
+    <label>Department Name</label>
+    <length>100</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

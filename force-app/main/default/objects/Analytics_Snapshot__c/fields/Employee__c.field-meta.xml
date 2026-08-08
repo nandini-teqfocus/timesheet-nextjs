@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Employee__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Employee resource for this analytics snapshot</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the employee</inlineHelpText>
+    <label>Employee</label>
+    <referenceTo>User</referenceTo>
+    <relationshipLabel>Analytics Snapshots</relationshipLabel>
+    <relationshipName>Analytics_Snapshots</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

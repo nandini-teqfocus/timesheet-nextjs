@@ -1,0 +1,339 @@
+<template>
+    <!-- analyticsDashboard: Premium executive BI dashboard -->
+    <c-page-container title="Analytics Dashboard" subtitle="Executive Analytics" show-header="true" is-loading={isLoading}>
+        
+        <!-- Premium Blue Gradient Analytics Hero Banner -->
+        <div class="analytics-hero slds-m-bottom_large">
+            <!-- Background pattern dots -->
+            <div class="hero-pattern" aria-hidden="true"></div>
+
+            <div class="hero-content">
+                <!-- Left: Title, Subtitle and Breadcrumb/Badge -->
+                <div class="hero-left">
+                    <div class="hero-avatar-wrap">
+                        <div class="hero-avatar">
+                            <lightning-icon icon-name="standard:timesheet" size="medium" class="analytics-header-icon"></lightning-icon>
+                        </div>
+                        <div class="status-dot" title="Active"></div>
+                    </div>
+                    <div class="hero-text">
+                        <p class="hero-greeting">Executive Analytics 📊</p>
+                        <h1 class="hero-name">Analytics Dashboard</h1>
+                        <p class="hero-sub">
+                            Utilization &amp; Efficiency Metrics
+                            <span class="hero-date-badge">
+                                <lightning-icon icon-name="utility:event" size="xx-small"></lightning-icon>
+                                {currentMonthYear}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Glassmorphism KPI Summary Layout -->
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="stat-value">{analytics.billableHours}h</span>
+                        <span class="stat-label">Billed Hours</span>
+                        <span class="stat-trend trend-up">
+                            <lightning-icon icon-name="utility:arrowup" size="xx-small" class="trend-icon-inline"></lightning-icon>
+                            {billedHoursPercentage}
+                        </span>
+                    </div>
+                    <div class="stat-divider" aria-hidden="true"></div>
+                    <div class="hero-stat">
+                        <span class="stat-value">{nonBillableHours}h</span>
+                        <span class="stat-label">Non-Billed Hours</span>
+                        <span class="stat-trend trend-neutral">
+                            <lightning-icon icon-name="utility:minus" size="xx-small" class="trend-icon-inline"></lightning-icon>
+                            {nonBilledHoursPercentage}
+                        </span>
+                    </div>
+                    <div class="stat-divider" aria-hidden="true"></div>
+                    <div class="hero-stat">
+                        <span class="stat-value">{utilizationPercentageStr}</span>
+                        <span class="stat-label">Avg Utilization</span>
+                        <span class="stat-trend trend-up">
+                            <lightning-icon icon-name="utility:trending_up" size="xx-small" class="trend-icon-inline"></lightning-icon>
+                            Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integrated Executive Health KPI Cards -->
+            <div class="exec-health-items">
+                <div class="health-item health-item_green">
+                    <lightning-icon icon-name="utility:check" size="x-small" class="health-icon"></lightning-icon>
+                    <div>
+                        <p class="health-title">Productivity Health</p>
+                        <p class="health-value">{productivityHealth}</p>
+                    </div>
+                </div>
+                <div class="health-item health-item_amber">
+                    <lightning-icon icon-name="utility:warning" size="x-small" class="health-icon"></lightning-icon>
+                    <div>
+                        <p class="health-title">Burnout Risk</p>
+                        <p class="health-value">{burnoutRisk}</p>
+                    </div>
+                </div>
+                <div class="health-item health-item_blue">
+                    <lightning-icon icon-name="utility:insert_tag_field" size="x-small" class="health-icon"></lightning-icon>
+                    <div>
+                        <p class="health-title">Capacity</p>
+                        <p class="health-value">{utilizationPercentageStr} Utilized</p>
+                    </div>
+                </div>
+                <div class="health-item health-item_purple">
+                    <lightning-icon icon-name="utility:einstein" size="x-small" class="health-icon"></lightning-icon>
+                    <div>
+                        <p class="health-title">AI Performance Score</p>
+                        <p class="health-value">{aiScore} / 100</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action & Dynamic context row inside Hero -->
+            <div class="hero-footer-row">
+                <div class="hero-insight">
+                    <lightning-icon icon-name="utility:einstein" size="xx-small" class="insight-icon"></lightning-icon>
+                    <span class="insight-text">System health is <strong>{productivityHealth}</strong> — average billing target achieved! 🚀</span>
+                </div>
+                <div class="hero-actions">
+                    <button class="quick-action-btn primary" onclick={handleExportReport} disabled={isExporting}>
+                        <lightning-icon icon-name="utility:download" size="x-small" class="export-icon-class"></lightning-icon>
+                        <template lwc:if={isExporting}>Exporting...</template>
+                        <template lwc:else>Export Report</template>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+            <!-- Left: Redesigned Tableau / Salesforce Analytics Cloud Trend Chart -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_medium">
+                <c-reusable-card title="Utilization Rate Trend" icon-name="utility:graph">
+                    <div class="chart-outer-container">
+                        <!-- Custom Trend Insight Metrics -->
+                        <div class="chart-header-summary">
+                            <div class="chart-header-pill">
+                                <span class="chart-header-dot" style="background:#2563eb"></span>
+                                <span class="chart-header-label">Utilization Trend</span>
+                                <span class="chart-header-value">{utilizationPercentageStr}</span>
+                            </div>
+                            <div class="chart-header-pill">
+                                <span class="chart-header-dot" style="background:#10b981"></span>
+                                <span class="chart-header-label">MoM Change</span>
+                                <span class="chart-header-value {momChangeClass}">{momChangeText}</span>
+                            </div>
+                            <span class="chart-week-label">12-Month Billing Performance</span>
+                        </div>
+
+                        <!-- SVG Trend Line Chart Area -->
+                        <div class="chart-svg-wrapper">
+                            <svg viewBox="0 0 440 180" class="premium-trend-svg" aria-label="Utilization rate trend chart" role="img" preserveAspectRatio="xMidYMid meet">
+                                <defs>
+                                    <!-- Linear Gradient for Area -->
+                                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.25"/>
+                                        <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+                                    </linearGradient>
+                                    <!-- Glow filter for line and active points -->
+                                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="3" result="blur" />
+                                        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                                    </filter>
+                                </defs>
+
+                                <!-- Grid Lines -->
+                                <line x1="40" y1="20" x2="420" y2="20" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4 4"/>
+                                <line x1="40" y1="50" x2="420" y2="50" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4 4"/>
+                                <line x1="40" y1="80" x2="420" y2="80" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4 4"/>
+                                <line x1="40" y1="110" x2="420" y2="110" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4 4"/>
+                                <line x1="40" y1="140" x2="420" y2="140" stroke="#cbd5e1" stroke-width="1.5"/>
+
+                                <!-- Y-Axis Value Labels -->
+                                <text x="32" y="24" text-anchor="end" class="axis-label-text">100%</text>
+                                <text x="32" y="54" text-anchor="end" class="axis-label-text">75%</text>
+                                <text x="32" y="84" text-anchor="end" class="axis-label-text">50%</text>
+                                <text x="32" y="114" text-anchor="end" class="axis-label-text">25%</text>
+                                <text x="32" y="144" text-anchor="end" class="axis-label-text">0%</text>
+
+                                <!-- Dynamic Shaded Area Path -->
+                                <path d={trendAreaPath} fill="url(#areaGrad)"/>
+
+                                <!-- Dynamic Trend Line Path -->
+                                <path d={trendPath} fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+
+                                <!-- Interactive Data Point Hotspots -->
+                                <template for:each={trendCoordinates} for:item="dot">
+                                    <g key={dot.key} class="chart-point-group">
+                                        <!-- Point marker elements -->
+                                        <circle cx={dot.cx} cy={dot.cy} r="6" fill="#ffffff" stroke="#2563eb" stroke-width="2" class="chart-point-outer"/>
+                                        <circle cx={dot.cx} cy={dot.cy} r="3" fill="#2563eb" class="chart-point-inner"/>
+                                        <!-- Floating value label directly above point -->
+                                        <text x={dot.cx} y={dot.textYValue} text-anchor="middle" class="chart-point-val">{dot.utilPercent}</text>
+                                    </g>
+                                </template>
+
+                                <!-- X-Axis Date Labels -->
+                                <template for:each={trendCoordinates} for:item="dot">
+                                    <text key={dot.key} x={dot.textX} y={dot.textY} text-anchor="middle" class="axis-label-text bold-axis">{dot.label}</text>
+                                </template>
+                            </svg>
+                        </div>
+
+                        <!-- Tableau Style Chart Legend / Footer -->
+                        <div class="chart-footer-legend">
+                            <div class="legend-meta">
+                                <span class="legend-dot" style="background:#2563eb; box-shadow: 0 0 6px rgba(37,99,235,0.4);"></span>
+                                <span class="legend-lbl">Resource Billing Utilization Rate</span>
+                            </div>
+                            <span class="legend-summary-badge">Avg: {utilizationPercentageStr}</span>
+                        </div>
+                    </div>
+                </c-reusable-card>
+            </div>
+
+            <!-- Right: Premium Project Hours Distribution Redesign -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_medium">
+                <c-reusable-card title="Project Hours Distribution" icon-name="utility:chart">
+                    <div class="distribution-outer-container">
+                        <!-- Proportional Projections Track (Segmented bar across top) -->
+                        <div class="segmented-proportional-track slds-m-bottom_medium">
+                            <template for:each={projectDistribution} for:item="item">
+                                <div key={item.name} style={item.segmentStyle} class="proportional-segment" title={item.tooltip}></div>
+                            </template>
+                        </div>
+
+                        <div class="donut-and-progress-layout">
+                            <!-- Premium dynamic SVG Donut Chart (radial contribution indicators) -->
+                            <div class="donut-svg-wrap">
+                                <svg viewBox="0 0 100 100" class="premium-donut-svg">
+                                    <!-- Base neutral circular track -->
+                                    <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f1f5f9" stroke-width="11"/>
+                                    <!-- Segments mapped using dynamic stroke-dasharray/stroke-dashoffset -->
+                                    <template for:each={projectDistribution} for:item="item">
+                                        <circle key={item.name} cx="50" cy="50" r="40" fill="transparent" 
+                                                stroke={item.color} stroke-width="11"
+                                                stroke-dasharray={item.dasharray}
+                                                stroke-dashoffset={item.dashoffset}
+                                                transform="rotate(-90 50 50)"
+                                                class="donut-segment-slice"/>
+                                    </template>
+                                    <!-- Center label overlays -->
+                                    <g class="donut-center-group">
+                                        <text x="50" y="47" text-anchor="middle" class="donut-center-val-text">{analytics.totalHours}h</text>
+                                        <text x="50" y="62" text-anchor="middle" class="donut-center-lbl-text">Total effort</text>
+                                    </g>
+                                </svg>
+                            </div>
+
+                            <!-- Sleek visual proportional progress bars list -->
+                            <div class="proportional-bars-list">
+                                <template for:each={projectDistribution} for:item="item">
+                                    <div key={item.name} class="dist-bar-item slds-m-bottom_small">
+                                        <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                                            <div class="slds-grid slds-grid_vertical-align-center">
+                                                <span class="bar-legend-dot" style={item.dotStyle}></span>
+                                                <span class="bar-project-title">{item.name}</span>
+                                            </div>
+                                            <span class="bar-project-value">{item.hours}h ({item.percentage}%)</span>
+                                        </div>
+                                        <div class="dist-progress-track-premium">
+                                            <div class="dist-progress-fill-premium" style={item.fillStyle}></div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </c-reusable-card>
+            </div>
+        </div>
+
+        <!-- AI Insights Panel -->
+        <div class="ai-insights-panel slds-m-bottom_medium">
+            <div class="ai-insights-header">
+                <lightning-icon icon-name="utility:einstein" size="small" class="ai-icon"></lightning-icon>
+                <h3 class="ai-insights-title">AI-Powered Efficiency Insights</h3>
+                <span class="ai-badge">Copilot</span>
+            </div>
+            <div class="ai-insights-grid">
+                <template for:each={aiInsights} for:item="item">
+                    <div key={item.text} class={item.class}>
+                        <lightning-icon icon-name={item.icon} size="x-small" class={item.iconClass}></lightning-icon>
+                        <p>{item.text}</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Redesigned Premium Executive Analytics Table -->
+        <div class="slds-m-bottom_medium premium-table-card">
+            <div class="table-card-header">
+                <div class="table-card-title-wrap">
+                    <lightning-icon icon-name="utility:custom_apps" size="small" class="table-header-icon"></lightning-icon>
+                    <div>
+                        <h2 class="table-card-title">Monthly Performance Logs</h2>
+                        <p class="table-card-subtitle">Historical utilization trends and active client deliverables</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-responsive-container">
+                <table class="executive-analytics-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="th-month">Month</th>
+                            <th scope="col" class="th-numeric">Billed Hours</th>
+                            <th scope="col" class="th-numeric">Non-Billed Hours</th>
+                            <th scope="col" class="th-progress">Monthly Utilization Rate</th>
+                            <th scope="col" class="th-badge">Efficiency Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={monthlyData} for:item="row">
+                            <tr key={row.id} class="executive-table-row">
+                                <td class="td-month">
+                                    <div class="month-cell-wrap">
+                                        <div class="month-icon-container">
+                                            <lightning-icon icon-name="utility:event" size="xx-small" class="month-cell-icon"></lightning-icon>
+                                        </div>
+                                        <span class="month-text-value">{row.month}</span>
+                                    </div>
+                                </td>
+                                <td class="td-numeric">
+                                    <div class="billed-numeric-cell">
+                                        <span class="billed-hours-val">{row.billed}h</span>
+                                        <span class="billed-hours-sub">{row.billedPct} of total</span>
+                                    </div>
+                                </td>
+                                <td class="td-numeric">
+                                    <span class="nonbilled-hours-val">{row.nonBilled}h</span>
+                                </td>
+                                <td class="td-progress">
+                                    <div class="util-progress-bar-container">
+                                        <div class="util-progress-track">
+                                            <div class={row.progressClass} style={row.progressStyle}></div>
+                                        </div>
+                                        <span class="util-percentage-lbl">{row.utilization}</span>
+                                    </div>
+                                </td>
+                                <td class="td-badge">
+                                    <span class={row.badgeClass}>
+                                        <span class="badge-dot"></span>
+                                        {row.utilization}
+                                    </span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Custom Toast container -->
+        <c-toast-message title={toastTitle} message={toastMessage} variant={toastVariant} duration="3000"></c-toast-message>
+    </c-page-container>
+</template>

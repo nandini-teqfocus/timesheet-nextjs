@@ -1,0 +1,118 @@
+<template>
+  <!-- Modal Dialog -->
+  <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_large">
+    <div class="slds-modal__container">
+        <!-- Modal Header -->
+        <header class="slds-modal__header">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleClose}>
+                <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+                <span class="slds-assistive-text">Close</span>
+            </button>
+            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Job Details</h2>
+        </header>
+
+        <!-- Modal Body -->
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-01">
+            <!-- Loading State -->
+            <div if:true={isLoading} class="slds-is-relative slds-p-vertical_large">
+                <lightning-spinner alternative-text="Loading job details" size="medium"></lightning-spinner>
+            </div>
+
+            <!-- Error State -->
+            <template if:true={hasError}>
+                <div class="slds-box slds-theme_alert-texture slds-theme_alert_error">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:error" size="small"></lightning-icon>
+                        Unable to Load Job Details
+                    </h3>
+                    <p class="slds-text-body_regular">{errorMessage}</p>
+                </div>
+            </template>
+
+            <!-- Job Details Content -->
+            <template if:true={showJobContent}>
+                <!-- Premium Header Meta -->
+                <div class="slds-p-around_large slds-border_bottom slds-theme_shade">
+                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <lightning-badge label={jobData.status__c} variant={statusVariant} class="slds-m-right_x-small"></lightning-badge>
+                            <template if:true={jobData.isRemote}>
+                                <lightning-badge label="Remote" variant="inverse" class="badge-premium"></lightning-badge>
+                            </template>
+                        </div>
+                        <span class="slds-text-body_small slds-text-color_weak">
+                            Posted on: <lightning-formatted-date-time value={jobData.created_date} month="short" day="2-digit" year="numeric"></lightning-formatted-date-time>
+                        </span>
+                    </div>
+                    <h2 class="slds-text-heading_large slds-m-bottom_medium">{jobData.name}</h2>
+                    <div class="slds-grid slds-wrap slds-grid_vertical-align-center slds-text-color_weak">
+                        <span class="meta-pill"><lightning-icon icon-name="utility:company" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>{jobData.department_name}</span>
+                        <span class="meta-pill"><lightning-icon icon-name="utility:checkin" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>{jobData.location}</span>
+                        <span class="meta-pill"><lightning-icon icon-name="utility:clock" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>{jobData.employment_type}</span>
+                    </div>
+                </div>
+
+                <div class="slds-p-around_large">
+                    <!-- Key Highlights Grid -->
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_large">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <div class="highlight-item">
+                                <div class="highlight-icon-box">
+                                    <lightning-icon icon-name="utility:rating" size="small"></lightning-icon>
+                                </div>
+                                <div>
+                                    <p class="slds-text-title">Experience Level</p>
+                                    <p class="slds-text-body_regular"><strong>{jobData.experience_level}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <div class="highlight-item">
+                                <div class="highlight-icon-box success">
+                                    <lightning-icon icon-name="utility:moneybag" size="small" variant="inverse"></lightning-icon>
+                                </div>
+                                <div>
+                                    <p class="slds-text-title">Referral Bonus</p>
+                                    <p class="slds-text-body_regular"><strong>Eligible for Referral Program</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Overview Section -->
+                    <div class="section-title slds-m-bottom_small">
+                        <lightning-icon icon-name="utility:description" size="xx-small" class="slds-m-right_x-small"></lightning-icon>
+                        <h3>Job Overview</h3>
+                    </div>
+                    <div class="slds-rich-text-editor__output slds-m-bottom_large job-text-area">
+                        <lightning-formatted-rich-text value={jobData.description}></lightning-formatted-rich-text>
+                    </div>
+
+                    <!-- Requirements Section -->
+                    <template if:true={jobData.requirements}>
+                        <div class="section-title slds-m-bottom_small">
+                            <lightning-icon icon-name="utility:record" size="xx-small" class="slds-m-right_x-small"></lightning-icon>
+                            <h3>Skills & Requirements</h3>
+                        </div>
+                        <div class="slds-rich-text-editor__output slds-m-bottom_large job-text-area">
+                            <lightning-formatted-rich-text value={jobData.requirements}></lightning-formatted-rich-text>
+                        </div>
+                    </template>
+
+                </div>
+            </template>
+        </div>
+
+        <!-- Modal Footer -->
+        <footer class="slds-modal__footer">
+            <lightning-button label="Close" variant="neutral" onclick={handleClose} class="slds-m-right_x-small"></lightning-button>
+            <template if:true={showJobContent}>
+                <lightning-button label="Refer Candidate" variant="brand" onclick={handleRefer}></lightning-button>
+            </template>
+        </footer>
+    </div>
+  </section>
+
+  <!-- Modal Backdrop -->
+  <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+</template>

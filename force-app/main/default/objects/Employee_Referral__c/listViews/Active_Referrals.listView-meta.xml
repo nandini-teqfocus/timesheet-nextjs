@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Referrals</fullName>
+    <booleanFilter>1 AND 2</booleanFilter>
+    <columns>NAME</columns>
+    <columns>Candidate__c</columns>
+    <columns>Job_Posting__c</columns>
+    <columns>Referred_By__c</columns>
+    <columns>Status__c</columns>
+    <columns>Submission_Date__c</columns>
+    <columns>Last_Status_Change__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Hired</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>notEqual</operation>
+        <value>Rejected</value>
+    </filters>
+    <label>Active Referrals</label>
+</ListView>

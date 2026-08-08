@@ -1,0 +1,123 @@
+<template>
+    <div class="pipeline-board-container">
+        <!-- Dashboard Header -->
+        <div class="board-header slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-bottom_large">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="board-header-icon">
+                    <lightning-icon icon-name="standard:kanban" size="medium"></lightning-icon>
+                </div>
+                <div class="slds-m-left_small">
+                    <h2 class="board-title">ATS Candidate Pipeline</h2>
+                    <p class="board-subtitle">Drag and drop cards to change status & update hiring stages instantly</p>
+                </div>
+            </div>
+            <div class="active-stages-count">
+                <span>Active Funnel Stages</span>
+            </div>
+        </div>
+
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center slds-p-vertical_xx-large">
+                <lightning-spinner alternative-text="Updating candidate pipeline" size="large"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <div class="pipeline-scroller">
+                <div class="pipeline-flex-container">
+                    <template for:each={pipelineData} for:item="column">
+                        <!-- Kanban Column -->
+                        <div key={column.value} class="column-wrapper">
+                            <!-- Column Header -->
+                            <div class={column.headerClass}>
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                        <span class="column-dot"></span>
+                                        <h3 class="column-title-text">{column.label}</h3>
+                                    </div>
+                                    <span class="column-count-badge">{column.count}</span>
+                                </div>
+                                <div class="header-indicator-bar"></div>
+                            </div>
+
+                            <!-- Column Body (Drop Target) -->
+                            <div 
+                                class="column-body-container"
+                                ondragover={handleDragOver}
+                                ondragenter={handleDragEnter}
+                                ondragleave={handleDragLeave}
+                                ondrop={handleDrop}
+                                data-status={column.value}
+                            >
+                                <template for:each={column.referrals} for:item="card">
+                                    <!-- Draggable Card -->
+                                    <div 
+                                        key={card.id} 
+                                        class="kanban-card"
+                                        draggable="true"
+                                        ondragstart={handleDragStart}
+                                        onclick={handleCardClick}
+                                        data-id={card.id}
+                                    >
+                                        <!-- Top Info: Candidate Name & Avatar -->
+                                        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_small">
+                                            <div class="candidate-avatar">
+                                                {card.candidateInitials}
+                                            </div>
+                                            <div class="slds-m-left_small slds-truncate">
+                                                <h4 class="candidate-name" title={card.candidateName}>{card.candidateName}</h4>
+                                                <p class="job-posting-title" title={card.jobTitle}>{card.jobTitle}</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Meta details: Department & Recruiter -->
+                                        <div class="card-details slds-m-bottom_small">
+                                            <div class="detail-row">
+                                                <span class="detail-label">Dept:</span>
+                                                <span class="detail-value">{card.department}</span>
+                                            </div>
+                                            <div class="detail-row">
+                                                <span class="detail-label">Recruiter:</span>
+                                                <span class="detail-value-highlight">{card.recruiter}</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Footer details & Resume Badge -->
+                                        <div class="card-footer-layout slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-p-top_small border-top">
+                                            <!-- Applied Date -->
+                                            <div class="applied-date-wrapper">
+                                                <lightning-icon icon-name="utility:clock" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                <span>{card.submissionDate}</span>
+                                            </div>
+
+                                            <div class="slds-grid slds-grid_vertical-align-center">
+                                                <!-- Resume Badge -->
+                                                <template if:true={card.hasResume}>
+                                                    <span class="resume-badge slds-m-right_xx-small" title="Resume uploaded">
+                                                        <lightning-icon icon-name="utility:pdf" size="xx-small" class="resume-icon"></lightning-icon>
+                                                        <span>CV</span>
+                                                    </span>
+                                                </template>
+
+                                                <!-- Priority Badge -->
+                                                <span class={card.priorityClass}>{card.priority}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Column Empty State -->
+                                <template if:false={column.referrals.length}>
+                                    <div class="column-empty-state">
+                                        <lightning-icon icon-name="utility:picklist_type" size="small" class="empty-icon"></lightning-icon>
+                                        <p>Drop Here</p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

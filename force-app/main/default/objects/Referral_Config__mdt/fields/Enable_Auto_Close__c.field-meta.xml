@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enable_Auto_Close__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Controls whether expired job postings are automatically closed.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Enable scheduled automation to close open jobs after the closing date.</inlineHelpText>
+    <label>Enable Auto Close</label>
+    <type>Checkbox</type>
+</CustomField>

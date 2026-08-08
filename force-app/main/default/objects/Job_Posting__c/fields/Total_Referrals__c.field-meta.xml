@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Referrals__c</fullName>
+    <description>Count of employee referrals submitted for this job posting</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Automatically calculated count of all referrals for this position</inlineHelpText>
+    <label>Total Referrals</label>
+    <summaryForeignKey>Employee_Referral__c.Job_Posting__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

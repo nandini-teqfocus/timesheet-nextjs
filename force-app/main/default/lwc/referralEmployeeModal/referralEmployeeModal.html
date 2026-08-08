@@ -1,0 +1,172 @@
+<template>
+  <div class="modal-backdrop" onclick={handleClose}></div>
+  <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-modal="true" aria-labelledby="modal-heading">
+    <div class="slds-modal__container">
+      <!-- Modal Header -->
+      <header class="slds-modal__header">
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleClose}>
+          <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+          <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 id="modal-heading" class="slds-modal__title slds-hyphenate">Referral Progress Workspace</h2>
+      </header>
+
+      <!-- Modal Body -->
+      <div class="slds-modal__content slds-p-around_medium" id="modal-content">
+        <template if:true={isLoading}>
+          <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+
+        <template if:true={referralData}>
+          <!-- Top Section: Progress Tracker -->
+          <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+            <h3 class="slds-text-heading_small slds-m-bottom_medium">Hiring Progress</h3>
+            <lightning-progress-indicator current-step={referralStatus} type="path" variant="base">
+              <lightning-progress-step label="Submitted" value="Submitted"></lightning-progress-step>
+              <lightning-progress-step label="Under Review" value="Under Review"></lightning-progress-step>
+              <lightning-progress-step label="Interview" value="Interview Scheduled"></lightning-progress-step>
+              <lightning-progress-step label="Selected" value="Selected"></lightning-progress-step>
+              <lightning-progress-step label="Hired" value="Hired"></lightning-progress-step>
+            </lightning-progress-indicator>
+          </div>
+
+          <lightning-layout multiple-rows="true">
+            <!-- Left Column: Information -->
+            <lightning-layout-item size="12" medium-size="8" padding="around-small">
+              
+              <!-- Section 1: Candidate Summary -->
+              <lightning-card title="Candidate Information" icon-name="utility:user" class="slds-m-bottom_medium">
+                <div class="slds-p-horizontal_small">
+                  <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                      <p class="slds-text-title slds-m-bottom_xx-small">Name</p>
+                      <p class="slds-text-body_regular"><strong>{candidateName}</strong></p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                      <p class="slds-text-title slds-m-bottom_xx-small">Email</p>
+                      <p class="slds-text-body_regular">{candidateEmail}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                      <p class="slds-text-title slds-m-bottom_xx-small">Phone</p>
+                      <p class="slds-text-body_regular">{candidatePhone}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-m-bottom_small">
+                      <p class="slds-text-title slds-m-bottom_xx-small">LinkedIn</p>
+                      <template if:true={linkedinUrl}>
+                        <a href={linkedinUrl} target="_blank" class="slds-text-link">View LinkedIn Profile</a>
+                      </template>
+                      <template if:false={linkedinUrl}>
+                        <p class="slds-text-body_regular slds-text-color_weak">No profile provided</p>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </lightning-card>
+
+              <!-- Section 2: Referral Details -->
+              <lightning-card title="Referral Details" icon-name="utility:summary" class="slds-m-bottom_medium">
+                <div class="slds-p-horizontal_small">
+                  <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-3 slds-m-bottom_small">
+                      <p class="slds-text-title slds-m-bottom_xx-small">Submitted Date</p>
+                      <p class="slds-text-body_regular">
+                        <lightning-formatted-date-time value={submittedDate} year="numeric" month="short" day="2-digit"></lightning-formatted-date-time>
+                      </p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3 slds-m-bottom_small">
+                      <p class="slds-text-title slds-m-bottom_xx-small">Bonus Status</p>
+                      <lightning-badge label={bonusStatus} variant={bonusVariant}></lightning-badge>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3 slds-m-bottom_small">
+                      <p class="slds-text-title slds-m-bottom_xx-small">Current Status</p>
+                      <p class="slds-text-body_regular">{referralStatus}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-m-top_small">
+                      <p class="slds-text-title slds-m-bottom_xx-small">Hiring Manager</p>
+                      <p class="slds-text-body_regular">{currentManagerName}</p>
+                    </div>
+                  </div>
+                </div>
+              </lightning-card>
+
+              <!-- Section 3: Status History -->
+              <lightning-card title="Hiring Timeline" icon-name="utility:clock">
+                <div class="slds-p-around_small">
+                  <c-status-timeline referral-id={referralId}></c-status-timeline>
+                </div>
+              </lightning-card>
+
+            </lightning-layout-item>
+
+            <!-- Right Column: Job Info & Resume -->
+            <lightning-layout-item size="12" medium-size="4" padding="around-small">
+              
+              <!-- Job Card -->
+              <lightning-card title="Position Details" icon-name="utility:case" class="slds-m-bottom_medium">
+                <div class="slds-p-around_small">
+                  <p class="slds-text-heading_small slds-m-bottom_small">{jobTitle}</p>
+                  <div class="slds-m-bottom_small">
+                    <p class="slds-text-title slds-m-bottom_xxx-small">Location</p>
+                    <p class="slds-text-body_regular">{jobLocation}</p>
+                  </div>
+                  <div class="slds-m-bottom_small">
+                    <p class="slds-text-title slds-m-bottom_xxx-small">Department</p>
+                    <p class="slds-text-body_regular">{departmentName}</p>
+                  </div>
+                  <div class="slds-m-bottom_small">
+                    <p class="slds-text-title slds-m-bottom_xxx-small">Employment Type</p>
+                    <p class="slds-text-body_regular">{employmentType}</p>
+                  </div>
+                  <div class="slds-m-bottom_small">
+                    <p class="slds-text-title slds-m-bottom_xxx-small">Experience Level</p>
+                    <p class="slds-text-body_regular">{experienceLevel}</p>
+                  </div>
+                  <div class="slds-box slds-theme_shade slds-p-around_small slds-m-top_small">
+                    <p class="slds-text-title slds-m-bottom_xx-small">Job Summary</p>
+                    <div class="slds-text-body_small line-clamp">
+                      <lightning-formatted-rich-text value={jobDescription}></lightning-formatted-rich-text>
+                    </div>
+                  </div>
+                </div>
+              </lightning-card>
+
+              <!-- Resume Card -->
+              <lightning-card title="Resume & Documents" icon-name="utility:file">
+                <div class="slds-p-around_small">
+                  <template if:true={hasResume}>
+                    <div class="slds-box slds-theme_shade slds-m-bottom_small">
+                      <div class="slds-grid slds-grid_vertical-align-center">
+                        <lightning-icon icon-name="doctype:pdf" size="small" class="slds-m-right_small"></lightning-icon>
+                        <div class="slds-truncate" style="max-width: 250px;">
+                          <p class="slds-text-body_small">Resume Available</p>
+                          <p class="slds-text-title" title={resumeStatus}>{resumeStatus}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="slds-grid slds-grid_vertical">
+                      <lightning-button label="View Resume" variant="neutral" icon-name="utility:preview" onclick={handleViewResume} class="slds-m-bottom_small"></lightning-button>
+                      <lightning-button label="Download PDF" variant="brand" icon-name="utility:download" onclick={handleDownloadResume}></lightning-button>
+                    </div>
+                  </template>
+                  <template if:false={hasResume}>
+                    <div class="slds-text-align_center slds-p-around_medium">
+                      <lightning-icon icon-name="utility:info" size="small" class="slds-m-bottom_small"></lightning-icon>
+                      <p class="slds-text-color_weak">No resume on file</p>
+                    </div>
+                  </template>
+                </div>
+              </lightning-card>
+
+            </lightning-layout-item>
+          </lightning-layout>
+        </template>
+      </div>
+
+      <!-- Modal Footer -->
+      <footer class="slds-modal__footer">
+        <lightning-button label="Close Workspace" variant="neutral" onclick={handleClose}></lightning-button>
+      </footer>
+    </div>
+  </section>
+  <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

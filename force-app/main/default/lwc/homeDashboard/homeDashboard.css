@@ -1,0 +1,152 @@
+/* homeDashboard — Modern Enterprise Dashboard Styles */
+
+.font-weight-bold {
+    font-weight: 700;
+}
+
+/* ======================================
+   CHART AREA — Modern enterprise card body
+   ====================================== */
+.home-chart-area {
+    padding: 0.5rem 0 0.25rem;
+}
+
+/* Chart header: summary stat pills + week label */
+.home-chart-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.home-chart-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 0.375rem 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.home-chart-stat-pill:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.home-chart-stat-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.home-chart-stat-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.home-chart-stat-val {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-left: 0.125rem;
+}
+
+.home-chart-week-label {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+    white-space: nowrap;
+    background: #f8fafc;
+    padding: 0.375rem 0.875rem;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+/* SVG wrapper with subtle background and border */
+.home-chart-svg-wrap {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 0.5rem 0.5rem;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.home-chart-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    min-height: 190px;
+}
+
+/* Chart legend row */
+.home-chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+}
+
+.home-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.home-legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.home-legend-lbl {
+    font-size: 0.75rem;
+    color: #475569;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Total badge — right-aligned pill */
+.home-chart-total-badge {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #64748b;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.home-chart-total-badge strong {
+    color: #2563eb;
+    font-weight: 700;
+}
+
+/* SVG Chart Micro-animations */
+.home-chart-svg rect {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, fill 0.2s ease;
+    transform-origin: bottom;
+}
+
+.home-chart-svg rect:hover {
+    opacity: 1 !important;
+    transform: scaleY(1.04);
+    filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.15));
+}

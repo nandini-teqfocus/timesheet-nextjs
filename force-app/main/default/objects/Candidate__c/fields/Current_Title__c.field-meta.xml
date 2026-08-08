@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Current_Title__c</fullName>
+    <description>The candidate&apos;s current job title or position.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the candidate&apos;s current job title (e.g., Senior Software Engineer, Marketing Manager).</inlineHelpText>
+    <label>Current Title</label>
+    <length>100</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

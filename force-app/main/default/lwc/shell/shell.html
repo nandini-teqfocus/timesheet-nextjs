@@ -1,0 +1,39 @@
+<template>
+    <!-- shell: App root router component -->
+    <div class="shell-container">
+        <!-- Global top navigation header -->
+        <template lwc:if={showNavigation}>
+            <c-header-bar 
+                active-page={activePage} 
+                onnavigate={handleNavigate}>
+            </c-header-bar>
+        </template>
+
+        <!-- Main application view content area -->
+        <main class="shell-content">
+            <template lwc:if={isHome}>
+                <c-home-dashboard></c-home-dashboard>
+            </template>
+            <template lwc:elif={isTimesheets}>
+                <c-timesheet-container></c-timesheet-container>
+            </template>
+            <template lwc:elif={isAnalytics}>
+                <c-analytics-dashboard></c-analytics-dashboard>
+            </template>
+            <template lwc:elif={isProfile}>
+                <c-profile-dashboard></c-profile-dashboard>
+            </template>
+            <template lwc:elif={isManager}>
+                <c-timesheet-manager-dashboard></c-timesheet-manager-dashboard>
+            </template>
+        </main>
+
+        <!-- Pinned bottom navigation for mobile screen sizes -->
+        <template lwc:if={showNavigation}>
+            <c-bottom-navigation 
+                active-page={activePage} 
+                onnavigate={handleNavigate}>
+            </c-bottom-navigation>
+        </template>
+    </div>
+</template>

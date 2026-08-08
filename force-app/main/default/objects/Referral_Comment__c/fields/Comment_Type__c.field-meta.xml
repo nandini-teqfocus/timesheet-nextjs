@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Comment_Type__c</fullName>
+    <description>Categorizes the type of comment for better organization and filtering</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the category that best describes this comment</inlineHelpText>
+    <label>Comment Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>General</fullName>
+                <default>true</default>
+                <label>General</label>
+            </value>
+            <value>
+                <fullName>Interview Feedback</fullName>
+                <default>false</default>
+                <label>Interview Feedback</label>
+            </value>
+            <value>
+                <fullName>Status Update</fullName>
+                <default>false</default>
+                <label>Status Update</label>
+            </value>
+            <value>
+                <fullName>Internal Note</fullName>
+                <default>false</default>
+                <label>Internal Note</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

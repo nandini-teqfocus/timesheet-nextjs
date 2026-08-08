@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enable_Email_Notifications__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Controls whether email notifications are sent for referral status changes</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Enable or disable automated email notifications to employees about their referral status updates</inlineHelpText>
+    <label>Enable Email Notifications</label>
+    <type>Checkbox</type>
+</CustomField>

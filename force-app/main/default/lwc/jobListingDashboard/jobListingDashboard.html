@@ -1,0 +1,167 @@
+<template>
+  <!-- Analytics/Header Section -->
+  <div class="slds-m-bottom_large">
+    <div class="analytics-bar">
+        <div class="stat-card">
+            <div class="stat-header">
+                <lightning-icon icon-name="standard:job_posting" size="small"></lightning-icon>
+                <span class="stat-value">{stats.totalJobs}</span>
+            </div>
+            <p class="stat-label">Total Open Roles</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <lightning-icon icon-name="standard:team_member" size="small"></lightning-icon>
+                <span class="stat-value">{stats.hotDepartments}</span>
+            </div>
+            <p class="stat-label">Hiring Focus</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <lightning-icon icon-name="standard:event" size="small"></lightning-icon>
+                <span class="stat-value">{stats.newJobs}</span>
+            </div>
+            <p class="stat-label">Added This Week</p>
+        </div>
+    </div>
+  </div>
+
+  <!-- Advanced Filter Toolbar -->
+  <div class="filter-toolbar slds-m-bottom_large">
+    <div class="filter-item slds-size_1-of-1 slds-medium-size_1-of-3">
+        <lightning-input
+            type="search"
+            placeholder="Search by role or department..."
+            label="Search Opportunities"
+            value={searchQuery}
+            onchange={handleSearchChange}
+        ></lightning-input>
+    </div>
+    <div class="filter-item">
+        <lightning-combobox
+            name="department"
+            label="Department"
+            value={selectedDepartment}
+            options={departmentOptions}
+            onchange={handleDepartmentChange}
+        ></lightning-combobox>
+    </div>
+    <div class="filter-item">
+        <lightning-combobox
+            name="location"
+            label="Location"
+            value={selectedLocation}
+            options={locationOptions}
+            onchange={handleLocationChange}
+        ></lightning-combobox>
+    </div>
+    <div class="filter-item slds-grow-none">
+        <lightning-button
+            label="Reset"
+            variant="neutral"
+            onclick={handleClearFilters}
+            class="slds-m-top_large"
+        ></lightning-button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div if:true={isLoading} class="slds-is-relative slds-p-vertical_medium">
+    <lightning-spinner alternative-text="Loading jobs" size="large"></lightning-spinner>
+  </div>
+
+  <!-- Error State -->
+  <template if:true={hasError}>
+    <lightning-card>
+      <div class="slds-box slds-theme_alert-texture slds-theme_alert_error">
+        <h3 class="slds-text-heading_small slds-m-bottom_small">
+          <lightning-icon icon-name="utility:error" size="small"></lightning-icon>
+          Unable to Load Jobs
+        </h3>
+        <p class="slds-text-body_regular">{errorMessage}</p>
+        <lightning-button label="Retry" onclick={loadJobs} class="slds-m-top_medium"></lightning-button>
+      </div>
+    </lightning-card>
+  </template>
+
+  <!-- Empty State -->
+  <template if:true={showEmptyState}>
+    <lightning-card>
+      <div class="slds-box slds-text-align_center slds-p-vertical_large">
+        <lightning-icon icon-name="utility:search" size="large" class="slds-m-bottom_medium"></lightning-icon>
+        <h3 class="slds-text-heading_medium slds-m-bottom_small">No Jobs Found</h3>
+        <p class="slds-text-body_regular slds-text-color_weak">
+          No job openings match your selected filters. Try adjusting your search criteria.
+        </p>
+        <lightning-button label="Clear Filters" onclick={handleClearFilters} class="slds-m-top_medium" variant="brand"></lightning-button>
+      </div>
+    </lightning-card>
+  </template>
+
+  <!-- Job Card Grid -->
+  <template if:true={showGridContent}>
+    <div class="job-grid">
+        <template for:each={processedJobs} for:item="job">
+            <div key={job.id} class={job.remoteClass}>
+                <div class="job-card-header">
+                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
+                        <lightning-badge label={job.status__c} variant={job.statusVariant}></lightning-badge>
+                        <template if:true={job.isRemote}>
+                            <lightning-badge label="Remote" variant="inverse" class="badge-premium"></lightning-badge>
+                        </template>
+                    </div>
+                    <h2 class="job-title">{job.name}</h2>
+                    <div class="job-meta">
+                        <span class="meta-item"><lightning-icon icon-name="utility:company" size="xx-small" class="meta-icon"></lightning-icon>{job.department_name}</span>
+                        <span class="meta-item"><lightning-icon icon-name="utility:checkin" size="xx-small" class="meta-icon"></lightning-icon>{job.location}</span>
+                        <span class="meta-item"><lightning-icon icon-name="utility:Clock" size="xx-small" class="meta-icon"></lightning-icon>{job.employment_type}</span>
+                    </div>
+                </div>
+
+                <p class="job-description">{job.truncatedDescription}</p>
+
+                <div class="job-footer">
+                    <span class="slds-text-body_small slds-text-color_weak">Posted: {job.formattedDate}</span>
+                    <div class="job-actions">
+                        <lightning-button-group>
+                            <lightning-button label="Details" variant="neutral" onclick={openJobDetails} data-job-id={job.id}></lightning-button>
+                            <lightning-button label="Refer" variant="brand" onclick={openReferralWizard} data-job-id={job.id}></lightning-button>
+                        </lightning-button-group>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+  </template>
+
+  <template if:true={showListContent}>
+    <c-reusable-datatable
+      records={jobs}
+      columns={datatableColumns}
+      row-actions={jobRowActions}
+      page-size="10"
+      enable-search
+      enable-row-actions
+      show-pagination
+      onrowaction={handleJobTableAction}
+    ></c-reusable-datatable>
+  </template>
+
+  <!-- Job Detail Modal -->
+  <template if:true={showJobModal}>
+    <c-job-detail-modal
+      job-id={selectedJobId}
+      onclose={closeJobModal}
+      onrefer={handleReferralInitiated}
+    ></c-job-detail-modal>
+  </template>
+
+  <!-- Referral Wizard Modal -->
+  <template if:true={showReferralWizard}>
+    <c-referral-wizard
+      job-id={selectedJobId}
+      onclose={closeReferralWizard}
+      onsuccess={handleReferralSuccess}
+    ></c-referral-wizard>
+  </template>
+</template>

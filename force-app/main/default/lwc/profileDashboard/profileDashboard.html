@@ -1,0 +1,557 @@
+<template>
+    <!-- profileDashboard: Premium profile & skills registry portal -->
+    <c-page-container title="My Profile" subtitle="Account &amp; Skills Registry" show-header="true">
+        
+        <!-- Profile Hero Header -->
+        <div class="profile-hero slds-m-bottom_large">
+            <div class="profile-hero-bg" aria-hidden="true"></div>
+            <div class="profile-hero-content">
+                <!-- Large Avatar -->
+                <div class="profile-avatar-wrap">
+                    <div class="profile-avatar-ring">
+                        <abbr class="profile-avatar-initials" title={profile.name}>{userInitials}</abbr>
+                    </div>
+                    <div class="profile-status-dot"></div>
+                </div>
+                <!-- Profile Info -->
+                <div class="profile-hero-info">
+                    <h2 class="profile-name">{profile.name}</h2>
+                    <p class="profile-title-text">{profile.title}</p>
+                    <div class="profile-meta-row">
+                        <span class="profile-meta-chip">
+                            <lightning-icon icon-name="utility:company" size="xx-small"></lightning-icon>
+                            {profile.department}
+                        </span>
+                        <template if:true={profile.managerName}>
+                            <span class="profile-meta-chip">
+                                <lightning-icon icon-name="utility:people" size="xx-small"></lightning-icon>
+                                Reports to: {profile.managerName}
+                            </span>
+                        </template>
+                        <span class="profile-meta-chip profile-meta-chip_badge">
+                            <lightning-icon icon-name="utility:record" size="xx-small"></lightning-icon>
+                            {employeeCode}
+                        </span>
+                    </div>
+                </div>
+                <!-- Right badges -->
+                <div class="profile-hero-badges">
+                    <div class="profile-badge-item">
+                        <span class="profile-badge-val">{utilizationRateFormatted}</span>
+                        <span class="profile-badge-lbl">Utilization</span>
+                    </div>
+                    <div class="profile-badge-divider"></div>
+                    <div class="profile-badge-item">
+                        <span class="profile-badge-val">{skillsCount}</span>
+                        <span class="profile-badge-lbl">Skills</span>
+                    </div>
+                    <div class="profile-badge-divider"></div>
+                    <div class="profile-badge-item">
+                        <span class="profile-badge-val">{profile.tenure}</span>
+                        <span class="profile-badge-lbl">Tenure</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-wrap slds-gutters">
+            
+            <!-- Left Column: Contact + Sidebar -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-m-bottom_medium">
+                
+                <!-- Contact Card -->
+                <div class="profile-contact-card slds-m-bottom_medium">
+                    <div class="profile-card-header slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <lightning-icon icon-name="utility:contact" size="x-small" class="card-hdr-icon slds-m-right_xx-small"></lightning-icon>
+                            <h3 class="profile-card-title">Contact Information</h3>
+                        </div>
+                        <button class="settings-edit-btn" onclick={handleEditContact} aria-label="Edit Contact Information" title="Edit Contact Information">
+                            <lightning-icon icon-name="utility:edit" size="xx-small"></lightning-icon>
+                        </button>
+                    </div>
+                    <div class="contact-items">
+                        <div class="contact-item">
+                            <div class="contact-icon-bg">
+                                <lightning-icon icon-name="utility:email" size="x-small" class="contact-icon"></lightning-icon>
+                            </div>
+                            <div class="contact-detail">
+                                <span class="contact-label">Email</span>
+                                <span class="contact-val" title={profile.email}>{profile.email}</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon-bg">
+                                <lightning-icon icon-name="utility:call" size="x-small" class="contact-icon"></lightning-icon>
+                            </div>
+                            <div class="contact-detail">
+                                <span class="contact-label">Phone</span>
+                                <span class="contact-val">{profile.phone}</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon-bg">
+                                <lightning-icon icon-name="utility:location" size="x-small" class="contact-icon"></lightning-icon>
+                            </div>
+                            <div class="contact-detail">
+                                <span class="contact-label">Location</span>
+                                <span class="contact-val">{profile.location}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications Card -->
+                <div class="profile-contact-card slds-m-bottom_medium">
+                    <div class="profile-card-header">
+                        <lightning-icon icon-name="utility:ribbon" size="x-small" class="card-hdr-icon"></lightning-icon>
+                        <h3 class="profile-card-title">Certifications</h3>
+                    </div>
+                    <div class="cert-list">
+                        <template if:true={hasCertifications}>
+                            <template for:each={certifications} for:item="c">
+                                <div class="cert-item" key={c.id}>
+                                    <span class="cert-badge cert-badge_gold">{c.initials}</span>
+                                    <div>
+                                        <p class="cert-name">{c.name}</p>
+                                        <p class="cert-date">{c.date}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                        <template if:false={hasCertifications}>
+                            <div class="slds-p-around_small slds-text-align_center slds-text-color_weak" style="font-size: 0.85rem;">
+                                No certifications registered.
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Current Projects Card -->
+                <div class="profile-contact-card">
+                    <div class="profile-card-header">
+                        <lightning-icon icon-name="utility:work_queue" size="x-small" class="card-hdr-icon"></lightning-icon>
+                        <h3 class="profile-card-title">Active Projects</h3>
+                    </div>
+                    <div class="project-list">
+                        <template if:true={hasActiveProjects}>
+                            <template for:each={activeProjects} for:item="p">
+                                <div class="project-item" key={p.id}>
+                                    <span class="project-dot" style={p.dotStyle}></span>
+                                    <div class="project-info">
+                                        <p class="project-name">{p.name}</p>
+                                        <div class="project-progress-bar">
+                                            <div class="project-progress-fill" style={p.fillStyle}></div>
+                                        </div>
+                                        <p class="project-pct">{p.progress}% Allocated</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                        <template if:false={hasActiveProjects}>
+                            <div class="slds-p-around_small slds-text-align_center slds-text-color_weak" style="font-size: 0.85rem;">
+                                No active projects assigned.
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Skills Registry + Account Settings -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3 slds-m-bottom_medium">
+                
+                <!-- Skills Registry -->
+                <div class="slds-m-bottom_medium">
+                    <c-reusable-card title="Skills Registry" icon-name="utility:user_role">
+                        <div slot="actions">
+                            <button class="settings-edit-btn" onclick={handleOpenSkillModal} aria-label="Add Skill" title="Add Skill">
+                                <lightning-icon icon-name="utility:add" size="xx-small"></lightning-icon>
+                            </button>
+                        </div>
+                        <div class="slds-p-horizontal_small">
+                            <c-skills-manager 
+                                skills={skills} 
+                                onskilldelete={handleSkillDelete}
+                                onskilledit={handleOpenEditSkillModal}
+                                onskilladd={handleOpenSkillModal}>
+                            </c-skills-manager>
+                        </div>
+                    </c-reusable-card>
+                </div>
+                
+                <!-- Account Settings -->
+                <div>
+                    <c-reusable-card title="Account Settings" icon-name="utility:settings">
+                        <div slot="actions">
+                            <button class="settings-edit-btn" onclick={handleEditSettings} aria-label="Edit Account Settings" title="Edit Account Settings">
+                                <lightning-icon icon-name="utility:edit" size="xx-small"></lightning-icon>
+                            </button>
+                        </div>
+                        <div class="settings-grid">
+                            <div class="settings-item">
+                                <div class="settings-icon-bg">
+                                    <lightning-icon icon-name="utility:world" size="x-small" class="settings-icon"></lightning-icon>
+                                </div>
+                                <div class="settings-content">
+                                    <p class="settings-label">Timezone</p>
+                                    <p class="settings-value">{profile.timezone}</p>
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="settings-icon-bg">
+                                    <lightning-icon icon-name="utility:text" size="x-small" class="settings-icon"></lightning-icon>
+                                </div>
+                                <div class="settings-content">
+                                    <p class="settings-label">Locale</p>
+                                    <p class="settings-value">{profile.locale}</p>
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="settings-icon-bg">
+                                    <lightning-icon icon-name="utility:people" size="x-small" class="settings-icon"></lightning-icon>
+                                </div>
+                                <div class="settings-content">
+                                    <p class="settings-label">Reporting Manager</p>
+                                    <p class="settings-value">{profile.managerName}</p>
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="settings-icon-bg">
+                                    <lightning-icon icon-name="utility:company" size="x-small" class="settings-icon"></lightning-icon>
+                                </div>
+                                <div class="settings-content">
+                                    <p class="settings-label">Department</p>
+                                    <p class="settings-value">{profile.department}</p>
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="settings-icon-bg">
+                                    <lightning-icon icon-name="utility:clock" size="x-small" class="settings-icon"></lightning-icon>
+                                </div>
+                                <div class="settings-content">
+                                    <p class="settings-label">Weekly Hour Target</p>
+                                    <p class="settings-value">{profile.weeklyHoursTarget} hours / week</p>
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="settings-icon-bg">
+                                    <lightning-icon icon-name="utility:notification" size="x-small" class="settings-icon"></lightning-icon>
+                                </div>
+                                <div class="settings-content">
+                                    <p class="settings-label">Notifications</p>
+                                    <p class="settings-value">Preference: {profile.notificationPreferences}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </c-reusable-card>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+        <!-- ADD SKILL MODAL -->
+        <template if:true={isSkillModalOpen}>
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open premium-modal">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header modal-header-gradient">
+                        <button class="slds-button slds-button_icon slds-modal__close close-btn-white" title="Close" onclick={handleCloseSkillModal}>
+                            <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate modal-title-text">Add Skill to Profile</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium modal-body-bg">
+                        <div class="slds-form slds-form_stacked">
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-combobox
+                                    name="skillSelect"
+                                    label="Select Skill"
+                                    placeholder="Search or select a skill..."
+                                    options={skillCatalogOptions}
+                                    value={newSkillId}
+                                    onchange={handleSkillCatalogChange}
+                                    required>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <label class="slds-form-element__label">Skill Category</label>
+                                <div class="slds-form-element__control slds-m-top_xx-small">
+                                    <template if:true={newSkillCategory}>
+                                        <span class="skill-category-badge">
+                                            <lightning-icon icon-name="utility:tag" size="xx-small" class="category-badge-icon slds-m-right_xx-small"></lightning-icon>
+                                            {newSkillCategory}
+                                        </span>
+                                    </template>
+                                    <template if:false={newSkillCategory}>
+                                        <span class="skill-category-badge-empty">
+                                            Select a skill above to see its category
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-combobox
+                                    name="proficiency"
+                                    label="Proficiency Level"
+                                    placeholder="Choose level..."
+                                    options={proficiencyOptions}
+                                    value={newSkillProficiency}
+                                    onchange={handleProficiencyChange}
+                                    required>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    type="number"
+                                    label="Years of Experience"
+                                    value={newSkillExperience}
+                                    onchange={handleExperienceChange}
+                                    min="0.5"
+                                    max="50"
+                                    step="0.5"
+                                    required>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Certified / Hold active accreditation"
+                                    checked={newSkillCertified}
+                                    onchange={handleCertifiedChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer modal-footer-bg">
+                        <button class="slds-button slds-button_neutral modal-btn-cancel" disabled={isSavingSkill} onclick={handleCloseSkillModal}>Cancel</button>
+                        <button class="slds-button slds-button_brand modal-btn-save" disabled={isSavingSkill} onclick={handleSaveSkill}>
+                            <template if:true={isSavingSkill}>
+                                Saving...
+                            </template>
+                            <template if:false={isSavingSkill}>
+                                Save Skill
+                            </template>
+                        </button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </template>
+        
+        <!-- EDIT SKILL MODAL -->
+        <template if:true={isEditSkillModalOpen}>
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open premium-modal">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header modal-header-gradient">
+                        <button class="slds-button slds-button_icon slds-modal__close close-btn-white" title="Close" onclick={handleCloseEditSkillModal}>
+                            <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate modal-title-text">Edit Skill</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium modal-body-bg">
+                        <div class="slds-form slds-form_stacked">
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    name="editSkillName"
+                                    label="Skill Name"
+                                    value={editSkillName}
+                                    disabled>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <label class="slds-form-element__label">Skill Category</label>
+                                <div class="slds-form-element__control slds-m-top_xx-small">
+                                    <span class="skill-category-badge">
+                                        <lightning-icon icon-name="utility:tag" size="xx-small" class="category-badge-icon slds-m-right_xx-small"></lightning-icon>
+                                        {editSkillCategory}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-combobox
+                                    name="editProficiency"
+                                    label="Proficiency Level"
+                                    placeholder="Choose level..."
+                                    options={proficiencyOptions}
+                                    value={editSkillProficiency}
+                                    onchange={handleEditProficiencyChange}
+                                    required>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    type="number"
+                                    label="Years of Experience"
+                                    value={editSkillExperience}
+                                    onchange={handleEditExperienceChange}
+                                    min="0.5"
+                                    max="50"
+                                    step="0.5"
+                                    required>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Certified / Hold active accreditation"
+                                    checked={editSkillCertified}
+                                    onchange={handleEditCertifiedChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer modal-footer-bg">
+                        <button class="slds-button slds-button_neutral modal-btn-cancel" disabled={isSavingSkill} onclick={handleCloseEditSkillModal}>Cancel</button>
+                        <button class="slds-button slds-button_brand modal-btn-save" disabled={isSavingSkill} onclick={handleSaveEditSkill}>
+                            <template if:true={isSavingSkill}>
+                                Saving...
+                            </template>
+                            <template if:false={isSavingSkill}>
+                                Save Changes
+                            </template>
+                        </button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </template>
+
+        <!-- EDIT CONTACT MODAL -->
+        <template if:true={isContactModalOpen}>
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open premium-modal">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header modal-header-gradient">
+                        <button class="slds-button slds-button_icon slds-modal__close close-btn-white" title="Close" onclick={handleCloseContactModal}>
+                            <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate modal-title-text">Edit Contact Information</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium modal-body-bg">
+                        <div class="slds-form slds-form_stacked">
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    type="email"
+                                    label="Email Address"
+                                    value={editEmail}
+                                    onchange={handleContactFieldChange}
+                                    data-field="email"
+                                    required>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    type="tel"
+                                    label="Phone Number"
+                                    value={editPhone}
+                                    onchange={handleContactFieldChange}
+                                    data-field="phone"
+                                    required>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    type="text"
+                                    label="Location"
+                                    value={editCity}
+                                    onchange={handleContactFieldChange}
+                                    data-field="city">
+                                </lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer modal-footer-bg">
+                        <button class="slds-button slds-button_neutral modal-btn-cancel" disabled={isSavingContact} onclick={handleCloseContactModal}>Cancel</button>
+                        <button class="slds-button slds-button_brand modal-btn-save" disabled={isSavingContact} onclick={handleSaveContact}>
+                            <template if:true={isSavingContact}>
+                                Saving...
+                            </template>
+                            <template if:false={isSavingContact}>
+                                Save Changes
+                            </template>
+                        </button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </template>
+
+        <!-- EDIT SETTINGS MODAL -->
+        <template if:true={isSettingsModalOpen}>
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open premium-modal">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header modal-header-gradient">
+                        <button class="slds-button slds-button_icon slds-modal__close close-btn-white" title="Close" onclick={handleCloseSettingsModal}>
+                            <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-modal__title slds-hyphenate modal-title-text">Edit Account Settings</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium modal-body-bg">
+                        <div class="slds-form slds-form_stacked">
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-combobox
+                                    label="Timezone"
+                                    options={timezoneOptions}
+                                    value={editTimezone}
+                                    onchange={handleSettingsFieldChange}
+                                    data-field="timezone"
+                                    required>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-combobox
+                                    label="Locale"
+                                    options={localeOptions}
+                                    value={editLocale}
+                                    onchange={handleSettingsFieldChange}
+                                    data-field="locale"
+                                    required>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-input
+                                    type="number"
+                                    label="Weekly Hour Target (hours)"
+                                    value={editWeeklyHoursTarget}
+                                    onchange={handleSettingsFieldChange}
+                                    data-field="weeklyHoursTarget"
+                                    min="1"
+                                    max="168"
+                                    required>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <lightning-combobox
+                                    label="Notification Preferences"
+                                    options={notificationOptions}
+                                    value={editNotificationPreferences}
+                                    onchange={handleSettingsFieldChange}
+                                    data-field="notificationPreferences"
+                                    required>
+                                </lightning-combobox>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer modal-footer-bg">
+                        <button class="slds-button slds-button_neutral modal-btn-cancel" disabled={isSavingSettings} onclick={handleCloseSettingsModal}>Cancel</button>
+                        <button class="slds-button slds-button_brand modal-btn-save" disabled={isSavingSettings} onclick={handleSaveSettings}>
+                            <template if:true={isSavingSettings}>
+                                Saving...
+                            </template>
+                            <template if:false={isSavingSettings}>
+                                Save Settings
+                            </template>
+                        </button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </template>
+
+        <!-- Custom Toast container -->
+        <c-toast-message title={toastTitle} message={toastMessage} variant={toastVariant} duration="3000"></c-toast-message>
+    </c-page-container>
+</template>

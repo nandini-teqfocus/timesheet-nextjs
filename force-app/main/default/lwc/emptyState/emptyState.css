@@ -1,0 +1,17 @@
+.empty-state-container {
+    max-width: 480px;
+    margin: 2rem auto;
+    padding: 2.5rem 2rem !important;
+    background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+    border: 1px solid #e8ecf0;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.empty-state-icon {
+    --slds-c-icon-color-foreground: #a0aec0;
+}
+
+.font-weight-bold {
+    font-weight: 700;
+}

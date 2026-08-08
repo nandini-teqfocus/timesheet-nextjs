@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Department__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>The department that owns this job posting</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the department that will manage this position</inlineHelpText>
+    <label>Department</label>
+    <referenceTo>Department__c</referenceTo>
+    <relationshipLabel>Job Postings</relationshipLabel>
+    <relationshipName>Job_Postings</relationshipName>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

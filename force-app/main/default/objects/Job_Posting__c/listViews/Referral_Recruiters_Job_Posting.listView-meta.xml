@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Referral_Recruiters_Job_Posting</fullName>
+    <filterScope>Queue</filterScope>
+    <label>Referral Recruiters</label>
+    <queue>Referral_Recruiters</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

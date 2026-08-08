@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>Home</defaultLandingTab>
+    <description>Employee Timesheet Management Application</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
+    <label>Employee Timesheet</label>
+    <navType>Standard</navType>
+    <tabs>Home</tabs>
+    <tabs>Timesheets</tabs>
+    <tabs>Timesheet_Entry__c</tabs>
+    <tabs>Project__c</tabs>
+    <tabs>Skill__c</tabs>
+    <tabs>Employee_Skill__c</tabs>
+    <tabs>Analytics_Snapshot__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

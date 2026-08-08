@@ -1,0 +1,301 @@
+/* Container Box */
+.activity-feed-container {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    padding: 1.5rem;
+}
+
+/* Header Banner */
+.feed-header {
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1rem;
+}
+
+.feed-header-icon {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-radius: 10px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 10px -2px rgba(59, 130, 246, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --sds-c-icon-color-foreground: #ffffff !important;
+}
+
+.feed-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.3px;
+    margin: 0;
+}
+
+.feed-subtitle {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.feed-stats-badge {
+    display: flex;
+    align-items: center;
+    background: #f0fdf4;
+    color: #166534;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid #bbf7d0;
+}
+
+.pulse-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    margin-right: 0.4rem;
+    display: inline-block;
+    animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 5px rgba(34, 197, 94, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
+
+/* Timeline Container */
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 0.5rem;
+}
+
+/* Activity Card */
+.activity-card {
+    position: relative;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.activity-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    border-color: #cbd5e1;
+}
+
+/* Left Accent Indicator Bar */
+.accent-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: #94a3b8; /* Default */
+}
+
+/* Initiator Avatar */
+.user-avatar-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    color: #475569;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+    border: 2px solid #ffffff;
+}
+
+/* Activity Info elements */
+.activity-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.2px;
+}
+
+.activity-desc {
+    font-size: 0.9rem;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.meta-label {
+    color: #64748b;
+    font-weight: 500;
+}
+
+.meta-value-highlight {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.meta-value {
+    color: #475569;
+    font-weight: 600;
+}
+
+.meta-separator {
+    color: #cbd5e1;
+    margin: 0 0.5rem;
+}
+
+/* Card Accent Varieties */
+.activity-card-success .accent-bar {
+    background-color: #10b981;
+}
+.activity-card-success .user-avatar-circle {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+}
+
+.activity-card-warning .accent-bar {
+    background-color: #f59e0b;
+}
+.activity-card-warning .user-avatar-circle {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+}
+
+.activity-card-error .accent-bar {
+    background-color: #ef4444;
+}
+.activity-card-error .user-avatar-circle {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b;
+}
+
+.activity-card-info .accent-bar {
+    background-color: #3b82f6;
+}
+.activity-card-info .user-avatar-circle {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+}
+
+.activity-card-purple .accent-bar {
+    background-color: #8b5cf6;
+}
+.activity-card-purple .user-avatar-circle {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: #5b21b6;
+}
+
+/* Badges Styling */
+.badge-custom {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+}
+
+.badge-success {
+    background-color: #ecfdf5;
+    color: #047857;
+    border: 1.5px solid #a7f3d0;
+}
+
+.badge-warning {
+    background-color: #fffbeb;
+    color: #b45309;
+    border: 1.5px solid #fde68a;
+}
+
+.badge-error {
+    background-color: #fdf2f2;
+    color: #b91c1c;
+    border: 1.5px solid #fecaca;
+}
+
+.badge-info {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1.5px solid #bfdbfe;
+}
+
+.badge-neutral {
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1.5px solid #cbd5e1;
+}
+
+/* Activity Meta Footer */
+.activity-meta-footer {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.activity-meta-footer lightning-icon {
+    --sds-c-icon-color-foreground: #64748b;
+}
+
+.meta-bullet {
+    margin: 0 0.5rem;
+    color: #cbd5e1;
+}
+
+/* Action Button */
+.action-btn-view {
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #334155 !important;
+    border-radius: 8px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    padding: 0.45rem 1rem !important;
+    transition: all 0.2s ease !important;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.action-btn-view:hover {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
+    transform: translateX(1px);
+}
+
+.action-btn-view lightning-icon {
+    --sds-c-icon-color-foreground: #334155;
+    transition: transform 0.2s ease;
+}
+
+.action-btn-view:hover lightning-icon {
+    --sds-c-icon-color-foreground: #0f172a;
+    transform: translateX(2px);
+}
+
+/* Empty State & Error illustration styling */
+.empty-state, .error-illustration {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+}
+
+.empty-icon {
+    --sds-c-icon-color-foreground: #94a3b8;
+}

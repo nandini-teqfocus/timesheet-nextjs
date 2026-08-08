@@ -1,0 +1,253 @@
+<template>
+  <!-- Modal Backdrop -->
+  <div class="modal-backdrop" onclick={handleBackdropClick}></div>
+
+  <!-- Modal Dialog -->
+  <section role="dialog" aria-modal="true" aria-labelledby="wizard-heading" class="slds-modal slds-fade-in-open slds-modal_large">
+    <div class="slds-modal__container">
+      <!-- Modal Header -->
+      <header class="slds-modal__header">
+        <button
+          class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+          title="Close wizard"
+          onclick={handleClose}
+        >
+          <lightning-icon icon-name="utility:close" size="medium" variant="inverse"></lightning-icon>
+          <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 id="wizard-heading" class="slds-modal__title slds-hyphenate">
+          Refer a Candidate
+        </h2>
+      </header>
+
+      <!-- Modal Body -->
+      <div class="slds-modal__content slds-p-around_medium">
+        <!-- Progress Indicator -->
+        <div class="slds-m-bottom_large">
+          <lightning-progress-indicator
+            current-step={currentStep}
+            type="base"
+            variant="linear"
+          >
+            <lightning-progress-step label="Select Job" value="1"></lightning-progress-step>
+            <lightning-progress-step label="Candidate Info" value="2"></lightning-progress-step>
+            <lightning-progress-step label="Upload Resume" value="3"></lightning-progress-step>
+            <lightning-progress-step label="Review & Submit" value="4"></lightning-progress-step>
+          </lightning-progress-indicator>
+        </div>
+
+        <!-- STEP CONTENT START -->
+        <div class="step-container">
+          <!-- STEP 1: Select Job -->
+          <template if:true={isStep1}>
+            <h3 class="slds-text-heading_medium slds-m-bottom_medium">
+              Which job are you referring for?
+            </h3>
+            <template if:true={jobId}>
+              <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                <p><strong>Job Title:</strong> {selectedJobTitle}</p>
+                <p><strong>Department:</strong> {selectedJobDepartment}</p>
+                <p><strong>Location:</strong> {selectedJobLocation}</p>
+              </div>
+            </template>
+            <template if:false={jobId}>
+              <lightning-combobox
+                name="job"
+                label="Select a Job"
+                value={selectedJobForStep}
+                options={availableJobs}
+                onchange={handleJobSelection}
+                required
+                placeholder="Search jobs..."
+              ></lightning-combobox>
+            </template>
+          </template>
+
+          <!-- STEP 2: Candidate Information -->
+          <template if:true={isStep2}>
+            <h3 class="slds-text-heading_medium slds-m-bottom_medium">Candidate Details</h3>
+            <div class="slds-grid slds-wrap slds-grid_pull-padded">
+              <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-horizontal_small slds-m-bottom_medium">
+                <lightning-input name="firstName" label="First Name" value={candidateData.firstName} onchange={handleCandidateInputChange} required></lightning-input>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-horizontal_small slds-m-bottom_medium">
+                <lightning-input name="lastName" label="Last Name" value={candidateData.lastName} onchange={handleCandidateInputChange} required></lightning-input>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-p-horizontal_small slds-m-bottom_medium">
+                <lightning-input name="email" label="Email" type="email" value={candidateData.email} onchange={handleCandidateInputChange} required></lightning-input>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-horizontal_small slds-m-bottom_medium">
+                <lightning-input name="phone" label="Phone" type="tel" value={candidateData.phone} onchange={handleCandidateInputChange}></lightning-input>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-horizontal_small slds-m-bottom_medium">
+                <lightning-input name="currentCompany" label="Current Company" value={candidateData.currentCompany} onchange={handleCandidateInputChange}></lightning-input>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-p-horizontal_small slds-m-bottom_medium">
+                <lightning-input name="currentTitle" label="Current Job Title" value={candidateData.currentTitle} onchange={handleCandidateInputChange}></lightning-input>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-p-horizontal_small slds-m-bottom_medium">
+                <lightning-input name="linkedinUrl" label="LinkedIn URL" type="url" value={candidateData.linkedinUrl} onchange={handleCandidateInputChange}></lightning-input>
+              </div>
+              <div class="slds-col slds-size_1-of-1 slds-p-horizontal_small">
+                <lightning-textarea name="comments" label="Comments" value={candidateData.comments} onchange={handleCandidateInputChange} rows="3"></lightning-textarea>
+              </div>
+            </div>
+          </template>
+
+          <!-- STEP 3: Resume Upload -->
+          <template if:true={isStep3}>
+            <h3 class="slds-text-heading_medium slds-m-bottom_medium">Upload Resume</h3>
+            <div class="slds-box slds-m-bottom_medium slds-text-align_center">
+              <lightning-file-upload
+                label="Upload Candidate Resume"
+                name="resumeUploader"
+                accept={allowedFileTypes}
+                record-id={currentUserId}
+                onuploadfinished={handleUploadFinished}
+                multiple="false"
+              ></lightning-file-upload>
+              
+              <template if:true={uploadedResumeFileName}>
+                <div class="slds-m-top_medium slds-p-around_small slds-theme_success slds-theme_alert-texture">
+                  <p><strong>Successfully Uploaded:</strong> {uploadedResumeFileName}</p>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <!-- STEP 4: Review & Submit -->
+          <template if:true={isStep4}>
+            <h3 class="slds-text-heading_medium slds-m-bottom_medium">Review Referral Details</h3>
+            
+            <div class="slds-box slds-theme_shade slds-p-around_medium slds-m-bottom_medium">
+              <!-- Section 1: Job Information -->
+              <div class="slds-section slds-is-open slds-m-bottom_medium">
+                <h4 class="slds-section__title slds-theme_gray-10 slds-p-around_xx-small">
+                  <span class="slds-truncate slds-p-horizontal_small" title="Job Information" style="font-weight: bold; color: #1b5297;">
+                    Job Information
+                  </span>
+                </h4>
+                <div class="slds-section__content slds-p-horizontal_small">
+                  <div class="slds-grid slds-wrap slds-grid_pull-padded">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Job Title</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewJobTitle}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Department</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewJobDepartment}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Location</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewJobLocation}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Employment Type</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewJobEmploymentType}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Job Experience Level</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewJobExperienceLevel}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 2: Candidate Information -->
+              <div class="slds-section slds-is-open slds-m-bottom_medium">
+                <h4 class="slds-section__title slds-theme_gray-10 slds-p-around_xx-small">
+                  <span class="slds-truncate slds-p-horizontal_small" title="Candidate Information" style="font-weight: bold; color: #1b5297;">
+                    Candidate Information
+                  </span>
+                </h4>
+                <div class="slds-section__content slds-p-horizontal_small">
+                  <div class="slds-grid slds-wrap slds-grid_pull-padded">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">First Name</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewCandidateFirstName}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Last Name</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewCandidateLastName}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Full Name</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewCandidateFullName}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Email</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewCandidateEmail}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Phone Number</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewCandidatePhone}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Current Company</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewCandidateCompany}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Current Job Title</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewCandidateTitle}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">LinkedIn URL</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewCandidateLinkedin}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Resume File Name</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewResumeFileName}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 3: Referral Details -->
+              <div class="slds-section slds-is-open">
+                <h4 class="slds-section__title slds-theme_gray-10 slds-p-around_xx-small">
+                  <span class="slds-truncate slds-p-horizontal_small" title="Referral Details" style="font-weight: bold; color: #1b5297;">
+                    Referral Details
+                  </span>
+                </h4>
+                <div class="slds-section__content slds-p-horizontal_small">
+                  <div class="slds-grid slds-wrap slds-grid_pull-padded">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Referred By</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewReferredBy}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-around_x-small">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Submission Date</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600;">{reviewSubmissionDate}</p>
+                    </div>
+                    <div class="slds-col slds-p-around_x-small slds-size_1-of-1">
+                      <p class="slds-text-title slds-m-bottom_xx-small" style="color: #514f4d;">Referral Notes</p>
+                      <p class="slds-text-body_regular" style="font-weight: 600; white-space: pre-line;">{reviewCandidateComments}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+        <!-- STEP CONTENT END -->
+      </div>
+
+      <!-- Modal Footer -->
+      <footer class="slds-modal__footer">
+        <lightning-button label="Cancel" onclick={handleClose} class="slds-m-right_x-small"></lightning-button>
+        <template if:false={isFirstStep}>
+          <lightning-button label="Previous" onclick={goToPreviousStep} class="slds-m-right_x-small"></lightning-button>
+        </template>
+        <template if:false={isLastStep}>
+          <lightning-button label="Next" variant="brand" onclick={goToNextStep} disabled={isNextDisabled}></lightning-button>
+        </template>
+        <template if:true={isLastStep}>
+          <lightning-button label="Submit Referral" variant="brand" onclick={submitReferral} disabled={isSubmitDisabled}></lightning-button>
+        </template>
+      </footer>
+    </div>
+  </section>
+
+  <!-- Modal Backdrop Overlay -->
+  <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Profile &amp; Skills Registry for Employee Timesheet Application</description>
+    <label>Profile</label>
+    <lwcComponent>profileDashboard</lwcComponent>
+    <motif>Custom44: Hammer</motif>
+</CustomTab>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bonus_Eligible__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Indicates whether the referring employee is eligible for a referral bonus if the candidate is hired.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Check if this referral qualifies for a bonus upon successful hire.</inlineHelpText>
+    <label>Bonus Eligible</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,228 @@
+<template>
+    <div class="dashboard-container">
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading Manager Dashboard..." size="medium" variant="brand"></lightning-spinner>
+        </template>
+
+        <!-- Premium Manager Hero Banner -->
+        <div class="hero-banner slds-m-bottom_large animate-fade-in">
+            <div class="hero-pattern" aria-hidden="true"></div>
+            <div class="hero-content">
+                <!-- Left Side: Avatar + Greeting -->
+                <div class="hero-left">
+                    <div class="hero-avatar-wrap">
+                        <div class="hero-avatar">
+                            <span class="hero-initials">{managerInitials}</span>
+                        </div>
+                        <div class="status-dot" title="Active"></div>
+                    </div>
+                    <div class="hero-text">
+                        <p class="hero-greeting">Enterprise Supervisory Dashboard 👋</p>
+                        <h1 class="hero-name">{managerName}</h1>
+                        <p class="hero-sub">
+                            Title: <strong>{managerTitle}</strong> &bull; Dept: <strong>{managerDepartment}</strong>
+                            <span class="hero-date-badge">
+                                <lightning-icon icon-name="utility:groups" size="xx-small"></lightning-icon>
+                                {teamLabel}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Side: Beautiful KPI counters -->
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="stat-value">{totalEmployees}</span>
+                        <span class="stat-label">Subordinates</span>
+                    </div>
+                    <div class="stat-divider" aria-hidden="true"></div>
+                    <div class="hero-stat">
+                        <span class="stat-value">{stats.totalTeamHours}h</span>
+                        <span class="stat-label">Hours Logged</span>
+                    </div>
+                    <div class="stat-divider" aria-hidden="true"></div>
+                    <div class="hero-stat">
+                        <span class="stat-value">{stats.avgTeamUtilization}%</span>
+                        <span class="stat-label">Avg Utilization</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insight pill -->
+            <div class="hero-insight">
+                <lightning-icon icon-name="utility:einstein" size="xx-small" class="insight-icon"></lightning-icon>
+                <span class="insight-text">You have <strong>{missingTimesheetsCount}</strong> pending timesheet submissions from your team this week.</span>
+            </div>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="kpi-grid slds-m-bottom_large">
+            <!-- Overtime Employees -->
+            <div class="glass-card kpi-card rose">
+                <div class="kpi-icon-wrapper">
+                    <lightning-icon icon-name="utility:priority" size="medium"></lightning-icon>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-label">Overtime (>40h)</div>
+                    <div class="kpi-value">{overtimeCount}</div>
+                </div>
+            </div>
+
+            <!-- Billed Hours -->
+            <div class="glass-card kpi-card green">
+                <div class="kpi-icon-wrapper">
+                    <lightning-icon icon-name="utility:money" size="medium"></lightning-icon>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-label">Billed Hours</div>
+                    <div class="kpi-value">{stats.totalBilledHours}h</div>
+                </div>
+            </div>
+
+            <!-- Non-Billed Hours -->
+            <div class="glass-card kpi-card blue">
+                <div class="kpi-icon-wrapper">
+                    <lightning-icon icon-name="utility:clock" size="medium"></lightning-icon>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-label">Non-Billed Hours</div>
+                    <div class="kpi-value">{stats.totalNonBilledHours}h</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Content Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Side: Activity Feed -->
+            <div class="glass-card">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <lightning-icon icon-name="utility:activity" size="small"></lightning-icon>
+                        Team Activity Feed
+                    </h2>
+                </div>
+                
+                <div class="activity-list">
+                    <template if:true={hasActivities}>
+                        <template for:each={activities} for:item="act">
+                            <div key={act.id} class="activity-item">
+                                <div class="activity-avatar">{act.initials}</div>
+                                <div class="activity-content">
+                                    <div class="activity-meta">
+                                        <span class="activity-user">{act.employeeName}</span>
+                                        <span class="activity-time">{act.relativeTime}</span>
+                                    </div>
+                                    <div class="activity-text">
+                                        Logged <strong>{act.hours} hours</strong> on Project: <strong>{act.projectName}</strong>
+                                        <template if:true={act.description}>
+                                            <p class="slds-m-top_xx-small slds-text-color_weak">{act.description}</p>
+                                        </template>
+                                    </div>
+                                    <span class="activity-badge">{act.category}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:false={hasActivities}>
+                        <div class="empty-state">
+                            <lightning-icon icon-name="utility:sentiment_neutral" size="large" class="empty-icon"></lightning-icon>
+                            <div class="empty-title">No recent activities</div>
+                            <div class="empty-desc">Your team members haven't logged any time entries recently.</div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Right Side: Project Allocation -->
+            <div class="glass-card project-allocation-card">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <lightning-icon icon-name="utility:chart" size="small" class="panel-icon"></lightning-icon>
+                        Project Hour Allocation
+                    </h2>
+                </div>
+                
+                <div class="chart-content">
+                    <template if:true={hasProjects}>
+                        <!-- Top Section: Large SVG Donut Chart + Allocation Summary -->
+                        <div class="analytics-chart-container">
+                            <div class="donut-chart-wrapper">
+                                <svg class="donut-svg" viewBox="0 0 120 120">
+                                    <!-- Background circle -->
+                                    <circle cx="60" cy="60" r="40" fill="transparent" stroke="#f1f5f9" stroke-width="12"></circle>
+                                    
+                                    <!-- Segments -->
+                                    <template for:each={stats.topProjects} for:item="proj">
+                                        <circle key={proj.projectName}
+                                                cx="60"
+                                                cy="60"
+                                                r="40"
+                                                fill="transparent"
+                                                stroke={proj.color}
+                                                stroke-width="12"
+                                                stroke-dasharray={proj.strokeDashArray}
+                                                stroke-dashoffset="0"
+                                                transform={proj.transform}
+                                                class="donut-segment"
+                                                title={proj.projectName}>
+                                        </circle>
+                                    </template>
+                                    
+                                    <!-- Center Label Group -->
+                                    <g class="donut-center-group">
+                                        <text x="60" y="58" class="donut-center-val" text-anchor="middle">{stats.totalTeamHours}h</text>
+                                        <text x="60" y="74" class="donut-center-lbl" text-anchor="middle">Total Hours</text>
+                                    </g>
+                                </svg>
+                            </div>
+
+                            <div class="analytics-summary-panel">
+                                <h3 class="summary-title">Allocation Summary</h3>
+                                <div class="summary-metrics">
+                                    <div class="summary-metric-item">
+                                        <span class="metric-label">Active Projects</span>
+                                        <span class="metric-value">{projectCount}</span>
+                                    </div>
+                                    <div class="summary-metric-item">
+                                        <span class="metric-label">Billed Util.</span>
+                                        <span class="metric-value">{stats.avgTeamUtilization}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Section: Clean, compact cards for legends -->
+                        <div class="project-legend-grid">
+                            <template for:each={stats.topProjects} for:item="proj">
+                                <div key={proj.projectName} class="legend-card" style={proj.legendCardStyle}>
+                                    <div class="legend-card-header">
+                                        <div class="project-name-wrap">
+                                            <span class="legend-dot" style={proj.colorStyle}></span>
+                                            <span class="legend-name" title={proj.projectName}>{proj.projectName}</span>
+                                        </div>
+                                        <span class="legend-percentage" style={proj.textColorStyle}>{proj.percentage}%</span>
+                                    </div>
+                                    <div class="legend-card-footer">
+                                        <span class="legend-hours">{proj.hours} hrs</span>
+                                        <template if:true={proj.projectCode}>
+                                            <span class="legend-code">{proj.projectCode}</span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                    
+                    <template if:false={hasProjects}>
+                        <div class="empty-state">
+                            <lightning-icon icon-name="utility:graph" size="large" class="empty-icon"></lightning-icon>
+                            <div class="empty-title">No hours tracked</div>
+                            <div class="empty-desc">There is no hour distribution data available for the team.</div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

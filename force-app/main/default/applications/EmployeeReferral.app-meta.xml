@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Employee Referral Management application for tracking job postings,
+        referrals, candidates, and departments.</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
+    <label>Employee Referral</label>
+    <navType>Standard</navType>
+    <tabs>Employee_Referral_Home</tabs>
+    <tabs>Job_Explorer</tabs>
+    <tabs>Recruiter_Console</tabs>
+    <tabs>Referral_Dashboard</tabs>
+    <tabs>Referral_Manager_Dashboard</tabs>
+    <tabs>Candidate_Applications</tabs>
+    <tabs>Department_Performance</tabs>
+    <tabs>Job_Posting__c</tabs>
+    <tabs>Employee_Referral__c</tabs>
+    <tabs>Candidate__c</tabs>
+    <tabs>Department__c</tabs>
+    <tabs>Timesheet_Entry__c</tabs>
+    <tabs>Employee__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

@@ -1,0 +1,24 @@
+<template>
+    <div class="slds-page-header slds-m-bottom_medium">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <h1 class="slds-page-header__title">All Candidate Applications</h1>
+                <p class="slds-page-header__info">Monitor all referral applications across the organization</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-m-bottom_large">
+        <c-candidate-pipeline oncardclick={handleCardClick}></c-candidate-pipeline>
+    </div>
+
+
+
+    <!-- Detail Modal -->
+    <template if:true={showDetailModal}>
+        <c-referral-management-modal
+            referral-id={selectedReferralId}
+            onclose={closeModal}
+        ></c-referral-management-modal>
+    </template>
+</template>

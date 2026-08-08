@@ -1,0 +1,103 @@
+<template>
+  <!-- Timeline Container -->
+  <div class="timeline-container">
+    
+    <!-- Loading State -->
+    <div if:true={isLoading} class="slds-is-relative slds-p-vertical_xx-large">
+      <lightning-spinner alternative-text="Loading timeline progression..." size="medium" variant="brand"></lightning-spinner>
+    </div>
+
+    <!-- Error State -->
+    <template if:true={hasError}>
+      <div class="slds-box error-alert slds-m-bottom_medium">
+        <div class="slds-media slds-media_center">
+          <div class="slds-media__figure">
+            <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+          </div>
+          <div class="slds-media__body slds-p-left_small">
+            <h3 class="slds-text-heading_small error-title">Unable to Load Status Timeline</h3>
+            <p class="slds-text-body_regular error-message">{errorMessage}</p>
+            <lightning-button label="Try Again" onclick={loadStatusHistory} variant="neutral" icon-name="utility:refresh" class="slds-m-top_small"></lightning-button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Professional Empty State -->
+    <template if:true={showEmptyState}>
+      <div class="empty-state-card slds-p-vertical_xx-large slds-p-horizontal_medium slds-text-align_center">
+        <div class="empty-state-icon-wrapper slds-m-bottom_medium">
+          <lightning-icon icon-name="utility:clock" size="medium" class="empty-state-icon"></lightning-icon>
+        </div>
+        <h3 class="empty-state-title">No Status Activity Yet</h3>
+        <p class="empty-state-subtitle">
+          This candidate's recruitment timeline will display milestones and recruiter logs here.
+        </p>
+      </div>
+    </template>
+
+    <!-- High-Fidelity Timeline Content -->
+    <template if:true={showTimelineContent}>
+      <ol class="slds-timeline">
+        <template for:each={statusHistory} for:item="item">
+          <li key={item.id} class="slds-timeline__item">
+            
+            <!-- Dynamic Color Timeline Point Marker -->
+            <div class="slds-timeline__marker">
+              <div class={item.iconClass}>
+                <lightning-icon
+                  icon-name={item.statusIcon}
+                  size="xx-small"
+                  variant="inverse"
+                  class="timeline-icon"
+                ></lightning-icon>
+              </div>
+            </div>
+
+            <!-- Timeline Details Card -->
+            <div class="slds-timeline__details timeline-detail-card">
+              
+              <!-- Card Header -->
+              <div class="timeline-header">
+                <div class="slds-grid slds-grid_vertical-align-center">
+                  <span class="status-badge slds-m-right_small">{item.status}</span>
+                </div>
+                <div class="timeline-date-container">
+                  <span class="timeline-date">{item.formatted_date}</span>
+                  <template if:true={item.created_time}>
+                    <span class="timeline-time">at {item.created_time}</span>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Notes / Recruiter Comments -->
+              <template if:true={item.comments}>
+                <div class="timeline-comment-box">
+                  <p class="comment-label">Transition Summary & Notes</p>
+                  <p class="comment-content">{item.comments}</p>
+                </div>
+              </template>
+
+              <!-- Recruiter Attribution Footer -->
+              <template if:true={item.recruiter_name}>
+                <div class="timeline-footer">
+                  <div class="slds-grid slds-grid_vertical-align-center">
+                    <lightning-icon
+                      icon-name="utility:user"
+                      size="xx-small"
+                      class="slds-m-right_xx-small footer-user-icon"
+                    ></lightning-icon>
+                    <span class="footer-attribution">
+                      Logged by <span class="recruiter-name-highlight">{item.recruiter_name}</span>
+                    </span>
+                  </div>
+                </div>
+              </template>
+
+            </div>
+          </li>
+        </template>
+      </ol>
+    </template>
+  </div>
+</template>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Visible_To_Employee__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Controls whether this comment should be visible to the referring employee</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Check this box to allow the referring employee to see this comment. Uncheck for internal-only comments.</inlineHelpText>
+    <label>Is Visible To Employee</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

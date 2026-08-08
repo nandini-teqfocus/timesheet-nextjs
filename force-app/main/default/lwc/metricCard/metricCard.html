@@ -1,0 +1,33 @@
+<template>
+    <!-- metricCard: Premium enterprise KPI card -->
+    <div class={cardClass}>
+        <!-- Colored accent top border via variant -->
+        <div class="kpi-accent" aria-hidden="true"></div>
+
+        <div class="kpi-body">
+            <!-- Icon + Title row -->
+            <div class="kpi-header">
+                <template if:true={icon}>
+                    <div class={iconBgClass}>
+                        <lightning-icon icon-name={icon} size="small" class="kpi-icon"></lightning-icon>
+                    </div>
+                </template>
+                <p class="kpi-title" title={title}>{title}</p>
+            </div>
+
+            <!-- Value -->
+            <p class={valueClass}>{value}</p>
+
+            <!-- Trend badge -->
+            <template if:true={trend}>
+                <div class="kpi-footer">
+                    <span class={trendBadgeClass}>
+                        <lightning-icon icon-name={trendIcon} size="xx-small" class="trend-icon"></lightning-icon>
+                        {trend}
+                    </span>
+                    <span class="kpi-period">vs last week</span>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

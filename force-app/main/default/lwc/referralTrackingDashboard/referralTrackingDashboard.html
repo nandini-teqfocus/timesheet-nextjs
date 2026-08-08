@@ -1,0 +1,222 @@
+<template>
+  <!-- Header -->
+  <div class="slds-page-header slds-page-header_record-home slds-m-bottom_large">
+    <div class="slds-page-header__row">
+      <div class="slds-page-header__col-title">
+        <h1 class="slds-page-header__title">My Referrals</h1>
+        <p class="slds-page-header__info">
+          Track your referral submissions and bonus eligibility
+        </p>
+      </div>
+
+      <div class="slds-page-header__col-controls">
+        <lightning-button
+          label="Refer a Candidate"
+          title="Start a new referral"
+          onclick={openReferralWizard}
+          variant="brand"
+          icon-name="utility:add"
+        ></lightning-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="slds-grid slds-wrap slds-gutters_small slds-m-bottom_large">
+    <!-- Total Referrals -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="stat-card total slds-p-around_medium">
+        <div class="stat-icon-container total">
+          <lightning-icon icon-name="utility:people" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{stats.totalReferrals}</span>
+          <p class="stat-label">Total Referrals</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Referrals -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="stat-card active slds-p-around_medium">
+        <div class="stat-icon-container active">
+          <lightning-icon icon-name="utility:sync" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{stats.underReview}</span>
+          <p class="stat-label">Active Cases</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- In Interview -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="stat-card interview slds-p-around_medium">
+        <div class="stat-icon-container interview">
+          <lightning-icon icon-name="utility:chat" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{stats.interviews}</span>
+          <p class="stat-label">In Interview</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hired -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="stat-card hired slds-p-around_medium">
+        <div class="stat-icon-container hired">
+          <lightning-icon icon-name="utility:like" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{stats.hired}</span>
+          <p class="stat-label">Hired Candidates</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bonuses Received -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="stat-card bonus slds-p-around_medium">
+        <div class="stat-icon-container bonus">
+          <lightning-icon icon-name="utility:currency" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{stats.totalBonusEarned}</span>
+          <p class="stat-label">Bonuses Received</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Bar -->
+  <div class="slds-grid slds-grid_vertical-align-end slds-gutters_small slds-m-bottom_large filter-bar">
+    <div class="slds-col slds-size_2-of-3">
+        <lightning-input 
+          type="search" 
+          placeholder="Search by candidate or job..." 
+          label="Search Referrals"
+          value={searchQuery}
+          onchange={handleSearchChange}
+        ></lightning-input>
+    </div>
+    <div class="slds-col slds-size_1-of-3">
+        <lightning-combobox
+          name="statusFilter"
+          label="Filter by Status"
+          value={selectedStatusFilter}
+          options={statusFilterOptions}
+          onchange={handleStatusFilterChange}
+        ></lightning-combobox>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div if:true={isLoading} class="slds-is-relative slds-p-vertical_large">
+    <lightning-spinner alternative-text="Loading referrals" size="medium"></lightning-spinner>
+  </div>
+
+  <!-- Empty State -->
+  <template if:true={showEmptyState}>
+    <div class="slds-illustration slds-illustration_small slds-m-top_large">
+        <img src="/img/chatter/OpenGraphDefault.png" class="slds-illustration__svg" alt=""/>
+        <div class="slds-text-color_weak slds-text-heading_medium">No referrals found</div>
+        <div class="slds-text-body_regular slds-m-top_small">Start by referring a top talent today!</div>
+    </div>
+  </template>
+
+  <!-- Referrals Card List -->
+  <template if:true={showReferralList}>
+    <div class="referral-list">
+        <template for:each={referrals} for:item="ref">
+            <div key={ref.id} class="referral-card slds-m-bottom_medium slds-p-around_medium">
+                <!-- Card Header -->
+                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                    <div class="slds-media slds-media_center">
+                        <div class="slds-media__figure">
+                            <lightning-avatar variant="circle" label={ref.candidate_name} fallback-icon-name="standard:user"></lightning-avatar>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-text-heading_small slds-truncate"><strong>{ref.candidate_name}</strong></h2>
+                            <p class="slds-text-body_small slds-text-color_weak">{ref.job_title} &bull; {ref.department}</p>
+                        </div>
+                    </div>
+                    <div class="slds-text-align_right">
+                        <lightning-badge label={ref.status} variant={ref.status_variant}></lightning-badge>
+                        <p class="slds-text-body_small slds-m-top_xx-small">Submitted: {ref.created_date}</p>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="slds-m-vertical_medium">
+                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                        <span class="slds-text-body_small">Referral Progress</span>
+                        <span class="slds-text-body_small"><strong>{ref.progress}%</strong></span>
+                    </div>
+                    <lightning-progress-bar value={ref.progress} size="small" variant="circular"></lightning-progress-bar>
+                </div>
+
+                <!-- Footer Summary -->
+                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-top_small">
+                    <div class="slds-grid slds-gutters_small">
+                        <div class="slds-col">
+                            <span class="slds-text-title slds-m-right_xx-small">Recruiter:</span>
+                            <span class="slds-text-body_small">{ref.recruiter}</span>
+                        </div>
+                        <div class="slds-col">
+                            <span class="slds-text-title slds-m-right_xx-small">Bonus Status:</span>
+                            <lightning-badge label={ref.bonus_status} variant={ref.bonus_variant}></lightning-badge>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <lightning-button-group>
+                            <lightning-button label="Details" icon-name={ref.expandIcon} onclick={handleToggleExpand} data-id={ref.id}></lightning-button>
+                            <lightning-button label="Manage" variant="neutral" onclick={handleReferralTableAction} data-id={ref.id} value="manage"></lightning-button>
+                            <template if:true={ref.has_resume}>
+                                <lightning-button-icon icon-name="utility:attach" variant="border-filled" title="View Resume" onclick={downloadResume} data-id={ref.id}></lightning-button-icon>
+                            </template>
+                        </lightning-button-group>
+                    </div>
+                </div>
+
+                <!-- Expandable Section -->
+                <template if:true={ref.isExpanded}>
+                    <div class="expand-section slds-m-top_medium slds-p-top_medium slds-border_top">
+                        <lightning-layout multiple-rows="true">
+                            <lightning-layout-item size="12" medium-size="6" padding="around-small">
+                                <h3 class="slds-text-title_caps slds-m-bottom_small">Application Status</h3>
+                                <div class="slds-box slds-theme_shade">
+                                    <p class="slds-m-bottom_x-small"><strong>Last Update:</strong> {ref.updated_date}</p>
+                                    <p><strong>Recruiter Note:</strong> No public comments available yet.</p>
+                                </div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" medium-size="6" padding="around-small">
+                                <h3 class="slds-text-title_caps slds-m-bottom_small">Next Steps</h3>
+                                <div class="slds-illustration slds-illustration_small">
+                                    <p class="slds-text-body_small slds-text-color_weak">Track status changes here as the candidate moves through the pipeline.</p>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+  </template>
+
+  <!-- Manage Referral Modal (Employee View) -->
+  <template if:true={showEmployeeModal}>
+    <c-referral-employee-modal
+      referral-id={selectedReferralId}
+      onclose={closeEmployeeModal}
+    ></c-referral-employee-modal>
+  </template>
+
+  <!-- Referral Wizard (New Referral) -->
+  <template if:true={showReferralWizard}>
+    <c-referral-wizard
+      onclose={closeReferralWizard}
+      onsuccess={handleReferralSuccess}
+    ></c-referral-wizard>
+  </template>
+</template>

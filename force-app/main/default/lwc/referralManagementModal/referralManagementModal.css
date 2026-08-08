@@ -1,0 +1,221 @@
+/* Referral Management Modal Redesign - CSS Styling Overrides */
+
+/* Modal Container Overrides */
+.slds-modal__container {
+  max-width: 78rem !important;
+  width: 85% !important;
+}
+
+.slds-modal__header {
+  border-bottom: 0;
+  padding: 0;
+}
+
+.slds-modal__content {
+  background-color: #f8fafc !important;
+}
+
+/* Header Slate Banner */
+.modal-header-banner {
+  background: linear-gradient(135deg, #f8fafc, #eff6ff);
+  color: #0f172a;
+  padding: 1.5rem 2rem;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  position: relative;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.modal-header-banner .slds-modal__title {
+  color: #1e3a8a; /* Soft deep corporate blue */
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.modal-header-banner .slds-page-header__name-meta {
+  color: #475569; /* Inviting slate grey */
+  font-weight: 600;
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+}
+
+/* Candidate Circular Avatar */
+.candidate-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+  border: 2px solid #e2e8f0;
+}
+
+/* High-Contrast Info Panel Cards */
+.detail-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  height: 100%;
+}
+
+.detail-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  border-bottom: 1.5px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  --sds-c-icon-color-foreground: #3b82f6;
+}
+
+.slds-text-title_caps {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #64748b;
+}
+
+.slds-text-title_bold {
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Resume Document File Panel */
+.file-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* Job Description rich text box */
+.description-wrapper {
+  background-color: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* Progress Path container styling */
+.path-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+/* Interactive Action center input boxes */
+.action-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.lookup-container {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+}
+
+.recruiter-input {
+  --sds-c-textarea-color-border: #cbd5e1;
+  --sds-c-input-color-border: #cbd5e1;
+}
+
+.checkbox-wrapper {
+  padding-left: 0.25rem;
+}
+
+/* Sidebar Pipeline Activity */
+.history-sidebar {
+  border-top: 1.5px solid #f1f5f9;
+  padding-top: 1.25rem;
+}
+
+.history-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.history-box {
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem 1rem;
+  --sds-c-icon-color-foreground: #64748b;
+}
+
+/* Sticky Modal Footer Controls styling */
+.sticky-footer {
+  border-top: 1.5px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+/* Precise Close (X) Positioning */
+.slds-modal__close,
+button.slds-modal__close {
+  position: absolute !important;
+  top: 1.25rem !important;
+  right: 1.5rem !important;
+  z-index: 9999 !important;
+  color: #64748b !important;
+  --sds-c-icon-color-foreground: #64748b !important;
+  --sds-c-icon-color-foreground-default: #64748b !important;
+}
+
+.slds-modal__close:hover,
+button.slds-modal__close:hover {
+  color: #0f172a !important;
+  --sds-c-icon-color-foreground: #0f172a !important;
+}
+
+/* Backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9500; /* Higher than analytics/drilldown modal backdrop */
+}
+
+.slds-modal {
+  z-index: 9501; /* Higher than analytics/drilldown modal section */
+}
+
+.slds-backdrop {
+  display: none !important; /* Hide standard backdrop in favor of our blur backdrop */
+}

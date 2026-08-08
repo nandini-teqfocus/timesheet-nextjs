@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Employee_Referral__c</fullName>
+    <description>Links this comment to its parent Employee Referral record</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The referral this comment belongs to</inlineHelpText>
+    <label>Employee Referral</label>
+    <referenceTo>Employee_Referral__c</referenceTo>
+    <relationshipLabel>Referral Comments</relationshipLabel>
+    <relationshipName>Referral_Comments</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

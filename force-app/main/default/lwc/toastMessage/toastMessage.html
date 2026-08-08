@@ -1,0 +1,40 @@
+<template>
+    <!-- toastMessage: Standard custom SLDS notification alert overlay -->
+    <template lwc:if={showToast}>
+        <div class="slds-notify_container toast-mask-container">
+            <div class={toastClass} role="status">
+                <span class="slds-assistive-text">{variant}</span>
+                
+                <!-- Variant icon -->
+                <span class="slds-icon_container slds-m-right_small slds-no-flex slds-align-middle">
+                    <lightning-icon 
+                        icon-name={iconName} 
+                        size="small" 
+                        variant="inverse">
+                    </lightning-icon>
+                </span>
+                
+                <!-- Title & text context -->
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small font-weight-bold">{title}</h2>
+                    <p class="slds-text-body_regular slds-p-top_xxx-small">{message}</p>
+                </div>
+                
+                <!-- Close cross icon -->
+                <div class="slds-notify__close">
+                    <button 
+                        class="slds-button slds-button_icon slds-button_icon-inverse" 
+                        title="Close" 
+                        onclick={handleCloseClick}>
+                        <lightning-icon 
+                            icon-name="utility:close" 
+                            size="small" 
+                            variant="inverse" 
+                            alternative-text="Close Notification">
+                        </lightning-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

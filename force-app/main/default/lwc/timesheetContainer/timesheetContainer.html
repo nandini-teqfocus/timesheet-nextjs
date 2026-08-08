@@ -1,0 +1,240 @@
+<template>
+    <c-page-container title="My Timesheet" subtitle="Current Period" show-header="true">
+        <!-- Spinner Overlay -->
+        <c-loading-spinner lwc:if={isLoading} alternative-text="Processing timesheet request..."></c-loading-spinner>
+
+        <!-- Submit Action button inside page container slot -->
+        <!-- Submit Action button removed for redesign requirements -->
+
+        <!-- Unsaved changes warning alert banner -->
+        <template lwc:if={hasUnsavedChanges}>
+            <div class="unsaved-warning-banner" role="alert">
+                <lightning-icon icon-name="utility:warning" size="x-small" class="unsaved-warning-icon"></lightning-icon>
+                <h2 class="unsaved-warning-text">You have unsaved draft modifications. Click "Submit for Approval" to secure your hours!</h2>
+            </div>
+        </template>
+
+        <!-- Week Navigation Header block -->
+        <div class="slds-grid slds-grid_align-spread slds-m-bottom_medium slds-grid_vertical-align-center week-header-container">
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <lightning-button-icon icon-name="utility:left" variant="border" alternative-text="Previous Week" class="slds-m-right_small week-nav-btn" onclick={handlePrevWeek}></lightning-button-icon>
+                <span class="week-range-text slds-p-horizontal_small">{formattedWeekRange}</span>
+                <lightning-button-icon icon-name="utility:right" variant="border" alternative-text="Next Week" class="slds-m-left_small week-nav-btn" onclick={handleNextWeek}></lightning-button-icon>
+            </div>
+            
+            <div class="slds-grid slds-grid_vertical-align-center">
+                <div class="total-hours-pill slds-m-right_small">
+                    <lightning-icon icon-name="utility:clock" size="xx-small" class="total-hours-icon"></lightning-icon>
+                    <span>Total Hours: {timesheet.totalHours}</span>
+                </div>
+                <div class="billable-hours-pill">
+                    <lightning-icon icon-name="utility:currency" size="xx-small" class="billable-hours-icon"></lightning-icon>
+                    <span>Billable Hours: {timesheet.billableHours}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consolidated Timesheet entries table -->
+        <div class="timesheet-table-container slds-m-bottom_medium">
+            <template lwc:if={hasEntries}>
+                <table class="enterprise-timesheet-table">
+                    <thead>
+                        <tr>
+                            <th class="col-date">Date</th>
+                            <th class="col-project">Project</th>
+                            <th class="col-category">Category</th>
+                            <th class="col-billable">Billable</th>
+                            <th class="col-hours">Hours</th>
+                            <th class="col-description">Description</th>
+                            <th class="col-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={weeklyEntries} for:item="row">
+                            <tr key={row.id} class="timesheet-row">
+                                <td class="cell-date">
+                                    <div class="date-badge">
+                                        <span class="date-weekday">{row.weekday}</span>
+                                        <span class="date-day">{row.dayOfMonth}</span>
+                                    </div>
+                                </td>
+                                <td class="cell-project">
+                                    <div class="project-info">
+                                        <span class="project-name">{row.projectName}</span>
+                                        <span class="project-code">{row.projectCode}</span>
+                                    </div>
+                                </td>
+                                <td class="cell-category">
+                                    <span class="category-pill">{row.category}</span>
+                                </td>
+                                <td class="cell-billable">
+                                    <span class={row.billableClass}>{row.billableLabel}</span>
+                                </td>
+                                <td class="cell-hours">
+                                    <span class="hours-val">{row.hours}h</span>
+                                </td>
+                                <td class="cell-description">
+                                    <span class="desc-text" title={row.description}>{row.description}</span>
+                                </td>
+                                <td class="cell-actions">
+                                    <div class="action-buttons">
+                                        <button 
+                                            class="action-btn edit-btn" 
+                                            title="Edit"
+                                            disabled={isTimesheetLocked}
+                                            data-id={row.id}
+                                            onclick={handleEditRow}>
+                                            <lightning-icon icon-name="utility:edit" size="xx-small" class="action-icon"></lightning-icon>
+                                        </button>
+                                        <button 
+                                            class="action-btn delete-btn" 
+                                            title="Delete"
+                                            disabled={isTimesheetLocked}
+                                            data-id={row.id}
+                                            onclick={handleDeleteRow}>
+                                            <lightning-icon icon-name="utility:delete" size="xx-small" class="action-icon"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+            <template lwc:else>
+                <c-empty-state 
+                    title="No Entries Logged" 
+                    message="You haven't logged any time entries for this week. Click 'Add Time Entry' below to get started!"
+                    icon-name="utility:clock"
+                    action-label="Log Time"
+                    onactionclick={handleOpenAddModal}>
+                </c-empty-state>
+            </template>
+        </div>
+
+        <!-- Quick actions footer -->
+        <div class="slds-grid slds-grid_align-end slds-p-vertical_small">
+            <lightning-button 
+                variant="brand" 
+                label="Add Time Entry" 
+                icon-name="utility:add" 
+                disabled={isTimesheetLocked}
+                onclick={handleOpenAddModal}
+                class="add-entry-btn">
+            </lightning-button>
+        </div>
+
+        <!-- Add/Edit Entry modal -->
+        <c-reusable-modal 
+            is-open={isEntryModalOpen} 
+            title={entryModalTitle} 
+            onclose={handleCloseEntryModal}>
+            
+            <div class="modal-form-container">
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <!-- Project Dropdown (Full Width) -->
+                    <div class="slds-col slds-size_1-of-1 slds-m-bottom_medium">
+                        <lightning-combobox
+                            name="projectId"
+                            label="Project"
+                            value={entryForm.projectId}
+                            placeholder="Select Project"
+                            options={projectOptions}
+                            required
+                            onchange={handleFormChange}
+                            class="custom-form-field">
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- Date & Task Category (2 Columns on Medium+) -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_medium">
+                        <lightning-input 
+                            type="date" 
+                            name="date" 
+                            label="Date" 
+                            value={entryForm.date} 
+                            max={todayStr}
+                            placeholder="Select Date"
+                            required
+                            onchange={handleFormChange}
+                            class="custom-form-field">
+                        </lightning-input>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_medium">
+                        <lightning-combobox
+                            name="category"
+                            label="Task Category"
+                            value={entryForm.category}
+                            placeholder="Select Task Category"
+                            options={categoryOptions}
+                            required
+                            onchange={handleFormChange}
+                            class="custom-form-field">
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- Hours & Billable (2 Columns) -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_medium">
+                        <lightning-input 
+                            type="number" 
+                            name="hours" 
+                            label="Hours" 
+                            value={entryForm.hours} 
+                            min="0.5" 
+                            max="24" 
+                            step="0.5" 
+                            required
+                            onchange={handleFormChange}
+                            class="custom-form-field">
+                        </lightning-input>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_medium slds-grid slds-grid_vertical-align-center check-col">
+                        <lightning-input
+                            type="checkbox"
+                            label="Billable Task"
+                            name="isBillable"
+                            checked={entryForm.isBillable}
+                            onchange={handleFormChange}
+                            class="custom-checkbox">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Description (Full Width) -->
+                    <div class="slds-col slds-size_1-of-1 slds-m-bottom_medium">
+                        <lightning-textarea 
+                            name="description" 
+                            label="Description / Work Notes" 
+                            value={entryForm.description}
+                            required
+                            onchange={handleFormChange}
+                            class="custom-form-field custom-textarea">
+                        </lightning-textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dynamic footer buttons override -->
+            <div slot="footer" class="modal-footer-actions">
+                <button class="slds-button slds-button_neutral modal-cancel-btn" onclick={handleCloseEntryModal}>Cancel</button>
+                <button class="slds-button slds-button_brand modal-save-btn" disabled={isSaveDisabled} onclick={handleSaveEntry}>Save Entry</button>
+            </div>
+        </c-reusable-modal>
+
+        <!-- Reusable confirmation dialog -->
+        <c-confirmation-dialog 
+            is-open={isConfirmDialogOpen} 
+            title={confirmDialogConfig.title} 
+            message={confirmDialogConfig.message} 
+            variant={confirmDialogConfig.variant} 
+            confirm-label={confirmDialogConfig.confirmLabel} 
+            cancel-label={confirmDialogConfig.cancelLabel} 
+            onconfirm={handleConfirmAction} 
+            oncancel={handleCancelConfirmAction}>
+        </c-confirmation-dialog>
+
+        <!-- Custom Toast container feedback -->
+        <c-toast-message title={toastTitle} message={toastMessage} variant={toastVariant} duration="4000"></c-toast-message>
+    </c-page-container>
+</template>

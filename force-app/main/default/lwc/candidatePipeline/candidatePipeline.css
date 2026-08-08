@@ -1,0 +1,329 @@
+/* Board Styles */
+.pipeline-board-container {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    padding: 1.5rem;
+}
+
+/* Board Header */
+.board-header {
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1.25rem;
+}
+
+.board-header-icon {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border-radius: 12px;
+    padding: 0.55rem;
+    box-shadow: 0 4px 10px -2px rgba(99, 102, 241, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --sds-c-icon-color-foreground: #ffffff !important;
+}
+
+.board-title {
+    font-size: 1.35rem;
+    font-weight: 850;
+    color: #1e1b4b;
+    letter-spacing: -0.4px;
+    margin: 0;
+}
+
+.board-subtitle {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.active-stages-count {
+    background: #f5f3ff;
+    color: #5b21b6;
+    border: 1px solid #ddd6fe;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    border-radius: 9999px;
+}
+
+/* Horizontal Scroller */
+.pipeline-scroller {
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    border-radius: 12px;
+}
+
+.pipeline-flex-container {
+    display: flex;
+    gap: 1.25rem;
+    min-height: 520px;
+    padding: 0.5rem;
+}
+
+/* Column Wrapper */
+.column-wrapper {
+    flex: 0 0 290px;
+    width: 290px;
+    display: flex;
+    flex-direction: column;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+/* Column Header Styling per Stage */
+.col-header {
+    position: relative;
+    padding: 1rem 1.25rem;
+    background: #ffffff;
+    border-bottom: 1.5px solid #f1f5f9;
+}
+
+.column-title-text {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.column-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+.column-count-badge {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+.header-indicator-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+/* Stage Theme Accents */
+.col-submitted .column-dot { background-color: #3b82f6; }
+.col-submitted .header-indicator-bar { background-color: #3b82f6; }
+
+.col-review .column-dot { background-color: #8b5cf6; }
+.col-review .header-indicator-bar { background-color: #8b5cf6; }
+
+.col-interview .column-dot { background-color: #6366f1; }
+.col-interview .header-indicator-bar { background-color: #6366f1; }
+
+.col-offer .column-dot { background-color: #f59e0b; }
+.col-offer .header-indicator-bar { background-color: #f59e0b; }
+
+.col-hired .column-dot { background-color: #10b981; }
+.col-hired .header-indicator-bar { background-color: #10b981; }
+
+.col-rejected .column-dot { background-color: #ef4444; }
+.col-rejected .header-indicator-bar { background-color: #ef4444; }
+
+/* Column Body (Drop Target) */
+.column-body-container {
+    flex-grow: 1;
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    transition: background-color 0.2s ease, border 0.2s ease;
+    min-height: 440px;
+}
+
+.column-body-container.drag-over {
+    background-color: #eef2ff;
+    border: 2px dashed #6366f1;
+}
+
+/* Kanban Card Styles */
+.kanban-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    cursor: grab;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.kanban-card:active {
+    cursor: grabbing;
+}
+
+.kanban-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    border-color: #cbd5e1;
+}
+
+.kanban-card.dragging {
+    opacity: 0.4;
+    border: 2px dashed #94a3b8;
+    background-color: #f8fafc;
+}
+
+/* Candidate Initials Avatar */
+.candidate-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: #4f36e5;
+    font-weight: 800;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+}
+
+/* Typography Inside Cards */
+.candidate-name {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.job-posting-title {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Card Details */
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-row {
+    display: flex;
+    font-size: 0.75rem;
+}
+
+.detail-label {
+    color: #94a3b8;
+    font-weight: 600;
+    width: 65px;
+    flex-shrink: 0;
+}
+
+.detail-value {
+    color: #475569;
+    font-weight: 650;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.detail-value-highlight {
+    color: #312e81;
+    font-weight: 750;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Border lines inside cards */
+.border-top {
+    border-top: 1.5px solid #f1f5f9;
+}
+
+/* Card Footer */
+.applied-date-wrapper {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.applied-date-wrapper lightning-icon {
+    --sds-c-icon-color-foreground: #94a3b8;
+}
+
+/* Resume Badge */
+.resume-badge {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.resume-icon {
+    --sds-c-icon-color-foreground: #059669;
+    margin-right: 0.15rem;
+}
+
+/* Priority Badges */
+.badge-priority {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.badge-low {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.badge-medium {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+.badge-urgent {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+/* Empty Column State */
+.column-empty-state {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.78rem;
+    gap: 0.35rem;
+}
+
+.empty-icon {
+    --sds-c-icon-color-foreground: #94a3b8;
+}

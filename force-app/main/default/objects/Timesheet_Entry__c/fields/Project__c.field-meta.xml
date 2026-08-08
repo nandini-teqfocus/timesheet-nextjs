@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Project__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Related project for this time entry</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the related project</inlineHelpText>
+    <label>Project</label>
+    <referenceTo>Project__c</referenceTo>
+    <relationshipLabel>Timesheet Entries</relationshipLabel>
+    <relationshipName>Timesheet_Entries</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

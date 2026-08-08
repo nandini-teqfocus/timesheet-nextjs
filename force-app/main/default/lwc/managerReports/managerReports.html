@@ -1,0 +1,222 @@
+<template>
+    <div class="reports-container">
+        <!-- Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading Reports..." size="medium" variant="brand"></lightning-spinner>
+        </template>
+
+        <!-- Glass Card Main Body -->
+        <div class="glass-card">
+            <!-- Header Block -->
+            <div class="reports-header-panel">
+                <div class="header-left">
+                    <div class="header-icon-box">
+                        <lightning-icon icon-name="utility:collection_variable" size="medium" class="header-icon"></lightning-icon>
+                    </div>
+                    <div class="header-text-block">
+                        <h1 class="reports-title">Workforce Analytics Console</h1>
+                        <p class="reports-subtitle">Analyze real-time utilization metrics, employee allocations, and export team audit reports.</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-primary" onclick={handleExportCSV} disabled={isLoading}>
+                        <lightning-icon icon-name="utility:download" size="x-small" class="btn-icon-left"></lightning-icon>
+                        <span>Export Team Report (CSV)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Strip -->
+            <template if:true={hasData}>
+                <div class="kpi-grid animate-fade-in">
+                    <!-- Avg Utilization -->
+                    <div class="kpi-card card-emerald">
+                        <div class="kpi-icon-wrap">
+                            <lightning-icon icon-name="utility:activity" size="small" class="icon-emerald"></lightning-icon>
+                        </div>
+                        <div class="kpi-details">
+                            <span class="kpi-lbl">Avg Utilization</span>
+                            <span class="kpi-val">{stats.avgTeamUtilization}%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Total Team Hours -->
+                    <div class="kpi-card card-blue">
+                        <div class="kpi-icon-wrap">
+                            <lightning-icon icon-name="utility:clock" size="small" class="icon-blue"></lightning-icon>
+                        </div>
+                        <div class="kpi-details">
+                            <span class="kpi-lbl">Total Team Hours</span>
+                            <span class="kpi-val">{stats.totalTeamHours}h</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Billed Hours -->
+                    <div class="kpi-card card-purple">
+                        <div class="kpi-icon-wrap">
+                            <lightning-icon icon-name="utility:success" size="small" class="icon-purple"></lightning-icon>
+                        </div>
+                        <div class="kpi-details">
+                            <span class="kpi-lbl">Billable Hours</span>
+                            <span class="kpi-val">{stats.totalBilledHours}h</span>
+                        </div>
+                    </div>
+
+                    <!-- Non-Billable Hours -->
+                    <div class="kpi-card card-amber">
+                        <div class="kpi-icon-wrap">
+                            <lightning-icon icon-name="utility:outward_bound" size="small" class="icon-amber"></lightning-icon>
+                        </div>
+                        <div class="kpi-details">
+                            <span class="kpi-lbl">Bench & Non-Billable</span>
+                            <span class="kpi-val">{stats.totalNonBilledHours}h</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Charts and Visuals Section -->
+            <template if:true={hasData}>
+                <div class="charts-grid animate-fade-in">
+                    <!-- Chart 1: Team Utilization Donut -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Team Utilization Rate</h3>
+                            <span class="chart-badge badge-high">Target 80%</span>
+                        </div>
+                        <div class="chart-body">
+                            <div class="svg-donut-container">
+                                <svg width="180" height="180" viewBox="0 0 180 180">
+                                    <!-- Background Circle -->
+                                    <circle cx="90" cy="90" r="70" fill="transparent" stroke="#f1f5f9" stroke-width="12"></circle>
+                                    <!-- Foreground Circle -->
+                                    <circle cx="90" cy="90" r="70" fill="transparent" stroke="#10b981" stroke-width="12"
+                                        stroke-dasharray="440" stroke-dashoffset={utilizationStrokeDashOffset}
+                                        stroke-linecap="round" transform="rotate(-90 90 90)">
+                                    </circle>
+                                </svg>
+                                <div class="donut-center-text">
+                                    <span class="donut-val">{stats.avgTeamUtilization}%</span>
+                                    <span class="donut-lbl">Utilized</span>
+                                </div>
+                            </div>
+                            <div class="legend-block">
+                                <span class="legend-item">
+                                    <span class="legend-dot dot-emerald"></span>
+                                    <span class="legend-text">Billable Hours ({stats.avgTeamUtilization}%)</span>
+                                </span>
+                                <span class="legend-item">
+                                    <span class="legend-dot dot-slate"></span>
+                                    <span class="legend-text">Bench / Other</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Hours Breakdown -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Billed vs Non-Billed Hours</h3>
+                            <span class="chart-badge badge-neutral">Logged Breakdown</span>
+                        </div>
+                        <div class="chart-body">
+                            <div class="svg-donut-container">
+                                <svg width="180" height="180" viewBox="0 0 180 180">
+                                    <!-- Background Circle -->
+                                    <circle cx="90" cy="90" r="70" fill="transparent" stroke="#f1f5f9" stroke-width="12"></circle>
+                                    <!-- Foreground Circle -->
+                                    <circle cx="90" cy="90" r="70" fill="transparent" stroke="#3b82f6" stroke-width="12"
+                                        stroke-dasharray="440" stroke-dashoffset={billedStrokeDashOffset}
+                                        stroke-linecap="round" transform="rotate(-90 90 90)">
+                                    </circle>
+                                </svg>
+                                <div class="donut-center-text">
+                                    <span class="donut-val">{stats.totalBilledHours}h</span>
+                                    <span class="donut-lbl">Billed</span>
+                                </div>
+                            </div>
+                            <div class="legend-block">
+                                <span class="legend-item">
+                                    <span class="legend-dot dot-blue"></span>
+                                    <span class="legend-text">Billed ({stats.totalBilledHours}h)</span>
+                                </span>
+                                <span class="legend-item">
+                                    <span class="legend-dot dot-slate"></span>
+                                    <span class="legend-text">Non-Billed ({stats.totalNonBilledHours}h)</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Summary -->
+                <div class="table-container animate-fade-in">
+                    <div class="table-header-bar">
+                        <h3 class="table-section-title">Subordinate Utilization List</h3>
+                        <span class="table-subtitle">Details of active hours and target achievements</span>
+                    </div>
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Subordinate Employee</th>
+                                <th>Title</th>
+                                <th>Department</th>
+                                <th>Total Hours Logged</th>
+                                <th>Billable Hours</th>
+                                <th>Utilization Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={subordinates} for:item="emp">
+                                <tr key={emp.id} class="table-row-hover">
+                                    <td>
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <div class="avatar-circle slds-m-right_small">
+                                                <span>{emp.initials}</span>
+                                            </div>
+                                            <div>
+                                                <strong class="employee-name-text">{emp.Name}</strong>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary">{emp.title}</span>
+                                    </td>
+                                    <td>
+                                        <span class="dept-badge">{emp.department}</span>
+                                    </td>
+                                    <td>
+                                        <span class="highlight-hours">{emp.totalHours} hrs</span>
+                                    </td>
+                                    <td>
+                                        <span class="billable-text">{emp.billableHours} hrs</span>
+                                    </td>
+                                    <td>
+                                        <div class="util-cell-container">
+                                            <span class={emp.badgeClass}><strong>{emp.utilizationRate}%</strong></span>
+                                            <!-- Progress Bar -->
+                                            <div class="util-progress-bg">
+                                                <div class="util-progress-bar" style={emp.progressWidthStyle}></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template if:false={hasData}>
+                <div class="empty-state animate-fade-in">
+                    <div class="empty-icon-wrap">
+                        <lightning-icon icon-name="utility:graph" size="large" class="empty-icon"></lightning-icon>
+                    </div>
+                    <h3 class="empty-title">No reporting data available</h3>
+                    <p class="empty-desc">There are no subordinates or time entries currently available to report on.</p>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

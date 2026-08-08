@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Department_Code__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>A unique short code identifier for the department used in reporting and integrations.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter a unique code (e.g., ENG, SLS, HR). Maximum 10 characters.</inlineHelpText>
+    <label>Department Code</label>
+    <length>10</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

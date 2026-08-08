@@ -1,0 +1,137 @@
+:host {
+    --card-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+    --primary-gradient: linear-gradient(135deg, #0070d2 0%, #00a1e0 100%);
+    --hired-gradient: linear-gradient(135deg, #2e844a 0%, #45c65a 100%);
+    --bonus-gradient: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    border-color: #cbd5e1;
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+}
+
+.stat-card.total::after { background: #0070d2; }
+.stat-card.active::after { background: #f2994a; }
+.stat-card.interview::after { background: #702082; }
+.stat-card.hired::after { background: #2e844a; }
+.stat-card.bonus::after { background: #f2c94c; }
+
+.stat-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.stat-icon-container.total {
+    background-color: rgba(0, 112, 210, 0.1);
+    --sds-c-icon-color-foreground: #0070d2;
+}
+.stat-icon-container.active {
+    background-color: rgba(242, 153, 74, 0.1);
+    --sds-c-icon-color-foreground: #d97706;
+}
+.stat-icon-container.interview {
+    background-color: rgba(112, 32, 130, 0.1);
+    --sds-c-icon-color-foreground: #702082;
+}
+.stat-icon-container.hired {
+    background-color: rgba(46, 132, 74, 0.1);
+    --sds-c-icon-color-foreground: #2e844a;
+}
+.stat-icon-container.bonus {
+    background-color: rgba(242, 201, 76, 0.15);
+    --sds-c-icon-color-foreground: #b78200;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.stat-value {
+    font-size: 1.65rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #1e293b;
+}
+
+.stat-label {
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.7rem;
+    margin-top: 0.15rem;
+}
+
+.filter-bar {
+    background: #f3f3f3;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+}
+
+.referral-card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    border-left: 6px solid #0070d2;
+}
+
+.referral-card:hover {
+    box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.1);
+}
+
+.referral-card[data-status="Hired"] { border-left-color: #2e844a; }
+.referral-card[data-status="Rejected"] { border-left-color: #ea001e; }
+.referral-card[data-status="Interview Scheduled"] { border-left-color: #702082; }
+
+.expand-section {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.actions lightning-button-group {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.slds-progress-bar {
+    border-radius: 10px;
+    height: 8px;
+}

@@ -1,0 +1,353 @@
+<template>
+    <c-page-container title="Team Dashboard" subtitle="Subordinate Timesheets & Team Insights" show-header="true">
+        <!-- 4-Column KPI Metrics Row -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+            <!-- Avg Team Utilization -->
+            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+                <c-metric-card
+                    title="Avg Team Utilization"
+                    value={teamAvgUtilizationStr}
+                    icon="utility:graph"
+                    variant="success">
+                </c-metric-card>
+            </div>
+            <!-- Total Team Hours -->
+            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+                <c-metric-card
+                    title="Total Logged Hours"
+                    value={teamTotalHoursStr}
+                    icon="utility:clock"
+                    variant="brand">
+                </c-metric-card>
+            </div>
+            <!-- Team Size -->
+            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+                <c-metric-card
+                    title="Team Size"
+                    value={teamSizeStr}
+                    icon="utility:people"
+                    variant="neutral">
+                </c-metric-card>
+            </div>
+            <!-- Billed Hours -->
+            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+                <c-metric-card
+                    title="Billed Hours"
+                    value={teamBilledHoursStr}
+                    icon="utility:moneybag"
+                    variant="warning">
+                </c-metric-card>
+            </div>
+        </div>
+
+        <!-- 2-Column Split Layout -->
+        <div class="slds-grid slds-wrap slds-gutters">
+            <!-- Left Panel: Subordinate Employees (4 columns) -->
+            <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12 slds-m-bottom_medium">
+                <c-reusable-card title="Subordinates" icon-name="utility:groups">
+                    <div class="search-box slds-m-bottom_small">
+                        <lightning-input
+                            name="search"
+                            type="search"
+                            variant="label-hidden"
+                            placeholder="Search by name, title..."
+                            value={searchKey}
+                            onchange={handleSearchChange}
+                            class="custom-search-input">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Scrollable list of subordinates -->
+                    <div class="subordinate-list scrollable-container">
+                        <template if:true={loadingSubordinates}>
+                            <div class="spinner-padding slds-align_absolute-center">
+                                <lightning-spinner size="small" variant="brand" alternative-text="Loading team..."></lightning-spinner>
+                            </div>
+                        </template>
+
+                        <template if:false={loadingSubordinates}>
+                            <template if:true={hasFilteredSubordinates}>
+                                <template for:each={filteredSubordinates} for:item="emp">
+                                    <div key={emp.id} 
+                                         class={emp.cardClass} 
+                                         onclick={handleSelectEmployee} 
+                                         data-id={emp.id}>
+                                        
+                                        <!-- Avatar Initials -->
+                                        <div class="avatar-circle" style={emp.avatarStyle}>
+                                            {emp.initials}
+                                        </div>
+
+                                        <!-- Details -->
+                                        <div class="emp-details">
+                                            <p class="emp-name">{emp.name}</p>
+                                            <p class="emp-title">{emp.title}</p>
+                                            
+                                            <!-- Stats indicators -->
+                                            <div class="emp-mini-stats slds-m-top_xx-small">
+                                                <span class="badge-sub-stat">
+                                                    <lightning-icon icon-name="utility:clock" size="xx-small" class="mini-stat-icon"></lightning-icon>
+                                                    {emp.totalHours}h
+                                                </span>
+                                                <span class="badge-sub-stat">
+                                                    <lightning-icon icon-name="utility:trending_up" size="xx-small" class="mini-stat-icon"></lightning-icon>
+                                                    {emp.utilizationRate}% Utl
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+
+                            <template if:false={hasFilteredSubordinates}>
+                                <c-empty-state 
+                                    title="No employees found" 
+                                    message="No team members match your search filter."
+                                    icon-name="utility:search">
+                                </c-empty-state>
+                            </template>
+                        </template>
+                    </div>
+                </c-reusable-card>
+            </div>
+
+            <!-- Right Panel: Employee Detail & History (8 columns) -->
+            <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12 slds-m-bottom_medium">
+                <template if:true={selectedEmployee}>
+                    <!-- Main Dashboard Detail View -->
+                    <div class="slds-m-bottom_medium">
+                        <c-reusable-card title="Employee Overview" icon-name="utility:user">
+                            <div class="employee-header-panel slds-grid slds-wrap slds-grid_align-spread slds-grid_vertical-align-center">
+                                <div class="slds-grid slds-grid_vertical-align-center slds-m-right_medium">
+                                    <div class="avatar-large slds-m-right_medium" style={selectedEmployee.avatarStyle}>
+                                        {selectedEmployee.initials}
+                                    </div>
+                                    <div>
+                                        <h2 class="selected-emp-name">{selectedEmployee.name}</h2>
+                                        <p class="selected-emp-meta">{selectedEmployee.title}  ·  <span class="email-link">{selectedEmployee.email}</span></p>
+                                    </div>
+                                </div>
+                                <div class="slds-grid slds-m-top_small slds-large-m-top_none gap-medium">
+                                    <div class="kpi-pill">
+                                        <span class="kpi-pill-lbl">Hours Logged</span>
+                                        <span class="kpi-pill-val">{selectedEmployee.totalHours} hrs</span>
+                                    </div>
+                                    <div class="kpi-pill">
+                                        <span class="kpi-pill-lbl">Utilization</span>
+                                        <span class="kpi-pill-val success-text">{selectedEmployee.utilizationRate}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </c-reusable-card>
+                    </div>
+
+                    <!-- Individual Productivity & Analytics Section -->
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                        <!-- Project Distribution Chart -->
+                        <div class="slds-col slds-size_1-of-1 slds-m-bottom_small">
+                            <c-reusable-card title="Project Hours Breakdown" icon-name="utility:pie_chart">
+                                <template if:true={loadingTimesheets}>
+                                    <div class="spinner-padding slds-align_absolute-center">
+                                        <lightning-spinner size="small" variant="brand" alternative-text="Analyzing projects..."></lightning-spinner>
+                                    </div>
+                                </template>
+                                <template if:false={loadingTimesheets}>
+                                    <template if:true={hasProjectBreakdown}>
+                                        <div class="slds-grid slds-wrap slds-gutters slds-grid_vertical-align-center">
+                                            <!-- Horizontal SVG Progress Bars -->
+                                            <div class="slds-col slds-size_1-of-1 slds-medium-size_7-of-12">
+                                                <div class="project-breakdown-list">
+                                                    <template for:each={employeeProjectBreakdown} for:item="proj">
+                                                        <div key={proj.name} class="project-bar-item slds-m-bottom_small">
+                                                            <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                                                                <span class="project-bar-label">
+                                                                    <span class="project-dot" style={proj.dotStyle}></span>
+                                                                    {proj.name} <span class="project-code-label">({proj.code})</span>
+                                                                </span>
+                                                                <span class="project-bar-val"><strong>{proj.hours}h</strong> ({proj.percentage}%)</span>
+                                                            </div>
+                                                            <div class="project-bar-track">
+                                                                <div class="project-bar-fill" style={proj.fillStyle}></div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <!-- Chart side stats -->
+                                            <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-12">
+                                                <div class="chart-stats-card slds-p-around_medium">
+                                                    <h4 class="chart-stats-title">Distribution Highlights</h4>
+                                                    <p class="slds-text-body_small slds-m-top_x-small">
+                                                        Primary focus this period: <strong class="brand-text">{topFocusProject}</strong>
+                                                    </p>
+                                                    <p class="slds-text-body_small slds-m-top_xxx-small">
+                                                        Billable allocation: <strong>{selectedEmployee.billableHours} hrs</strong>
+                                                    </p>
+                                                    <div class="legend-card-fill slds-m-top_small">
+                                                        <span class="util-badge">Active Subordinate View</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:false={hasProjectBreakdown}>
+                                        <c-empty-state 
+                                            title="No logged projects" 
+                                            message="This employee has not logged any hours yet."
+                                            icon-name="utility:chart">
+                                        </c-empty-state>
+                                    </template>
+                                </template>
+                            </c-reusable-card>
+                        </div>
+                    </div>
+
+                    <!-- Timesheet History List (Read-Only) -->
+                    <c-reusable-card title="Weekly Timesheet History" icon-name="utility:history">
+                        <template if:true={loadingTimesheets}>
+                            <div class="spinner-padding slds-align_absolute-center">
+                                <lightning-spinner size="small" variant="brand" alternative-text="Loading history..."></lightning-spinner>
+                            </div>
+                        </template>
+
+                        <template if:false={loadingTimesheets}>
+                            <template if:true={hasTimesheets}>
+                                <div class="slds-scrollable_x table-container">
+                                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered table-custom">
+                                        <thead>
+                                            <tr class="slds-text-title_caps">
+                                                <th scope="col"><div class="slds-truncate" title="Timesheet Name">Timesheet Name</div></th>
+                                                <th scope="col"><div class="slds-truncate" title="Period">Period</div></th>
+                                                <th scope="col"><div class="slds-truncate" title="Status">Status</div></th>
+                                                <th scope="col"><div class="slds-truncate" title="Actions">Actions</div></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={employeeTimesheets} for:item="ts">
+                                                <tr key={ts.Id}>
+                                                    <td>
+                                                        <div class="slds-truncate font-weight-bold">{ts.Name}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate">{ts.formattedPeriod}</div>
+                                                    </td>
+                                                    <td>
+                                                        <span class={ts.statusClass}>{ts.Status__c}</span>
+                                                    </td>
+                                                    <td>
+                                                        <lightning-button 
+                                                            variant="brand-outline" 
+                                                            label="View Entries" 
+                                                            icon-name="utility:open" 
+                                                            size="small" 
+                                                            data-id={ts.Id}
+                                                            data-name={ts.Name}
+                                                            onclick={handleViewTimesheetEntries}>
+                                                        </lightning-button>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+
+                            <template if:false={hasTimesheets}>
+                                <c-empty-state 
+                                    title="No timesheets submitted" 
+                                    message="This employee has no timesheet entries logged."
+                                    icon-name="utility:clock">
+                                </c-empty-state>
+                            </template>
+                        </template>
+                    </c-reusable-card>
+                </template>
+
+                <template if:false={selectedEmployee}>
+                    <!-- Empty State Select User -->
+                    <div class="glass-empty-container slds-align_absolute-center">
+                        <c-empty-state 
+                            title="Select a Team Member" 
+                            message="Please select a subordinate employee from the left panel to review their logged weekly timesheets and focus breakdown."
+                            icon-name="utility:multi_select_checkbox">
+                        </c-empty-state>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Read-Only Timesheet Entries Modal -->
+        <c-reusable-modal is-open={isModalOpen} title={modalTitle} onclose={handleCloseModal}>
+            <template if:true={loadingEntries}>
+                <div class="spinner-padding slds-align_absolute-center">
+                    <lightning-spinner size="medium" variant="brand" alternative-text="Loading daily entries..."></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:false={loadingEntries}>
+                <template if:true={hasEntries}>
+                    <div class="slds-scrollable_x modal-table-container">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered table-custom">
+                            <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th scope="col"><div class="slds-truncate" title="Date">Date</div></th>
+                                    <th scope="col"><div class="slds-truncate" title="Project">Project</div></th>
+                                    <th scope="col"><div class="slds-truncate" title="Category">Category</div></th>
+                                    <th scope="col"><div class="slds-truncate" title="Hours">Hours</div></th>
+                                    <th scope="col"><div class="slds-truncate" title="Billable">Billable</div></th>
+                                    <th scope="col"><div class="slds-truncate" title="Description">Description</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={timesheetEntries} for:item="entry">
+                                    <tr key={entry.id}>
+                                        <td>
+                                            <div class="slds-truncate font-weight-bold">{entry.entryDate}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">{entry.projectName} <span class="project-code-label">({entry.projectCode})</span></div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate">{entry.category}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate font-weight-bold brand-text">{entry.hours} hrs</div>
+                                        </td>
+                                        <td>
+                                            <span class={entry.billableClass}>{entry.billableLabel}</span>
+                                        </td>
+                                        <td class="cell-wrap">
+                                            <div class="description-text">{entry.description}</div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Locking/Read-Only Assurance Badge -->
+                    <div class="read-only-banner slds-m-top_medium slds-p-around_small slds-grid slds-grid_vertical-align-center slds-grid_align-center">
+                        <lightning-icon icon-name="utility:lock" size="x-small" class="lock-icon slds-m-right_x-small"></lightning-icon>
+                        <span class="read-only-label">Read-Only Supervisory View — Editing and approval controls are disabled.</span>
+                    </div>
+                </template>
+
+                <template if:false={hasEntries}>
+                    <c-empty-state 
+                        title="No daily entries logged" 
+                        message="There are no daily entry logs inside this timesheet."
+                        icon-name="utility:record">
+                    </c-empty-state>
+                </template>
+            </template>
+
+            <!-- Custom Modal Footer -->
+            <div slot="footer">
+                <button class="slds-button slds-button_neutral modal-close-btn" onclick={handleCloseModal}>Close</button>
+            </div>
+        </c-reusable-modal>
+
+        <!-- Custom Toast container -->
+        <c-toast-message title={toastTitle} message={toastMessage} variant={toastVariant} duration="3000"></c-toast-message>
+    </c-page-container>
+</template>

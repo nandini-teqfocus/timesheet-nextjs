@@ -1,0 +1,50 @@
+<template>
+    <!-- reusableCard: Standard reusable SLDS card wrapper -->
+    <article class="slds-card slds-card_boundary card-wrapper">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <!-- Dynamic standard Salesforce Icon -->
+                <template lwc:if={iconName}>
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container">
+                            <lightning-icon 
+                                icon-name={iconName} 
+                                size="small" 
+                                alternative-text={title}>
+                            </lightning-icon>
+                        </span>
+                    </div>
+                </template>
+                
+                <!-- Dynamic text details -->
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-text-heading_small slds-truncate font-weight-bold" title={title}>
+                            {title}
+                        </span>
+                        <template lwc:if={subtitle}>
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_xxx-small">{subtitle}</p>
+                        </template>
+                    </h2>
+                </div>
+
+                <!-- Top right actions slot -->
+                <div class="slds-no-flex">
+                    <slot name="actions"></slot>
+                </div>
+            </header>
+        </div>
+
+        <!-- Body card content slot -->
+        <div class="slds-card__body slds-card__body_inner slds-p-vertical_small">
+            <slot></slot>
+        </div>
+
+        <!-- Dynamic footer context -->
+        <template lwc:if={hasFooter}>
+            <footer class="slds-card__footer card-footer-border slds-p-around_small slds-text-align_right">
+                <slot name="footer"></slot>
+            </footer>
+        </template>
+    </article>
+</template>

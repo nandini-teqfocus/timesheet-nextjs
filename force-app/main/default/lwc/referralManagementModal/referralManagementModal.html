@@ -1,0 +1,265 @@
+<template>
+  <!-- Modal Backdrop -->
+  <div class="modal-backdrop" onclick={handleClose}></div>
+  
+  <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-modal="true" aria-labelledby="modal-heading">
+    <div class="slds-modal__container">
+      
+      <!-- Premium Header Banner -->
+      <header class="modal-header-banner">
+        <lightning-button-icon
+          icon-name="utility:close"
+          onclick={handleClose}
+          alternative-text="Close"
+          variant="bare"
+          class="slds-modal__close"
+          size="large"
+        ></lightning-button-icon>
+        
+        <div class="slds-grid slds-grid_vertical-align-center">
+          <div class="slds-m-right_medium">
+            <div class="candidate-avatar">{candidateInitials}</div>
+          </div>
+          <div>
+            <h2 id="modal-heading" class="slds-modal__title slds-hyphenate">{candidateName}</h2>
+            <p class="slds-page-header__name-meta">
+              {jobTitle} &bull; {departmentName}
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Modal Body -->
+      <div class="slds-modal__content slds-p-around_large" id="modal-content">
+        <template if:true={isLoading}>
+          <lightning-spinner alternative-text="Loading Details..." size="large" variant="brand"></lightning-spinner>
+        </template>
+
+        <template if:true={referralData}>
+          <!-- Dynamic Progress Progression Path -->
+          <div class="path-container slds-m-bottom_large">
+            <div class="slds-path">
+              <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                  <div class="slds-path__scroller">
+                    <div class="slds-path__scroller_inner">
+                      <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                        <template for:each={stages} for:item="stage">
+                          <li key={stage.value} class={stage.cssClass} role="presentation">
+                            <a class="slds-path__link" href="javascript:void(0);" role="option" tabindex="-1">
+                              <span class="slds-path__stage">
+                                <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse" class="slds-m-right_xx-small"></lightning-icon>
+                              </span>
+                              <span class="slds-path__title">{stage.label}</span>
+                            </a>
+                          </li>
+                        </template>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Column Main Layout -->
+          <lightning-layout multiple-rows="true" class="slds-gutters_direct-medium">
+            
+            <!-- Left Column: High-Contrast Info Panels -->
+            <lightning-layout-item size="12" medium-size="8" class="slds-m-bottom_medium">
+              
+              <!-- Section 1: Candidate Profile Info Card -->
+              <div class="detail-card slds-m-bottom_large">
+                <div class="detail-card-title">
+                  <lightning-icon icon-name="utility:user" size="small" class="slds-m-right_xx-small"></lightning-icon>
+                  <span>Candidate Profile</span>
+                </div>
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Email Address</p>
+                    <p class="slds-text-body_regular slds-text-title_bold">{candidateEmail}</p>
+                  </div>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Phone Number</p>
+                    <p class="slds-text-body_regular slds-text-title_bold">{candidatePhone}</p>
+                  </div>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">LinkedIn URL</p>
+                    <template if:true={linkedinUrl}>
+                      <a href={linkedinUrl} target="_blank" class="slds-text-link slds-text-title_bold">
+                        <lightning-icon icon-name="utility:socialshare" size="xx-small" class="slds-m-right_xxx-small"></lightning-icon>
+                        View LinkedIn Profile
+                      </a>
+                    </template>
+                    <template if:false={linkedinUrl}>
+                      <p class="slds-text-body_regular slds-text-color_weak">Not Provided</p>
+                    </template>
+                  </div>
+                  <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Resume File</p>
+                    <template if:true={hasResume}>
+                      <div class="file-container">
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                          <lightning-icon icon-name="doctype:pdf" size="small" class="slds-m-right_x-small"></lightning-icon>
+                          <span class="slds-text-title_bold slds-truncate" title={resumeStatus} style="max-width: 180px;">{resumeStatus}</span>
+                        </div>
+                        <div class="slds-grid">
+                          <lightning-button label="View" variant="neutral" size="small" onclick={handleViewResume} class="slds-m-right_xx-small"></lightning-button>
+                          <lightning-button label="Download" variant="neutral" size="small" onclick={handleDownloadResume}></lightning-button>
+                        </div>
+                      </div>
+                    </template>
+                    <template if:false={hasResume}>
+                      <div class="slds-text-align_center slds-p-around_medium slds-box slds-theme_shade">
+                        <lightning-icon icon-name="utility:info" size="small" class="slds-m-bottom_small"></lightning-icon>
+                        <p class="slds-text-color_weak">No resume on file</p>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 2: Referral Pipeline Info Card -->
+              <div class="detail-card slds-m-bottom_large">
+                <div class="detail-card-title">
+                  <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_xx-small"></lightning-icon>
+                  <span>Referral Details</span>
+                </div>
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                  <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Referred By</p>
+                    <p class="slds-text-body_regular slds-text-title_bold">{referrerName}</p>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Submitted Date</p>
+                    <p class="slds-text-body_regular slds-text-title_bold">
+                      <lightning-formatted-date-time value={submittedDate} year="numeric" month="short" day="2-digit"></lightning-formatted-date-time>
+                    </p>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Job Location</p>
+                    <p class="slds-text-body_regular slds-text-title_bold">{jobLocation}</p>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Bonus Eligibility</p>
+                    <p class="slds-text-body_regular slds-text-title_bold">{bonusEligibility}</p>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Assigned Manager</p>
+                    <p class="slds-text-body_regular slds-text-title_bold">{currentManagerName}</p>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-m-bottom_small">
+                    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Current Status</p>
+                    <p class="slds-text-body_regular slds-text-title_bold">{referralStatus}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 3: Job Description Rich Text -->
+              <div class="detail-card">
+                <div class="detail-card-title">
+                  <lightning-icon icon-name="utility:case" size="small" class="slds-m-right_xx-small"></lightning-icon>
+                  <span>Job Description</span>
+                </div>
+                <div class="slds-box slds-theme_shade description-wrapper">
+                  <lightning-formatted-rich-text value={jobDescription}></lightning-formatted-rich-text>
+                </div>
+              </div>
+
+            </lightning-layout-item>
+
+            <!-- Right Column: Interactive Recruiter Action Panel -->
+            <lightning-layout-item size="12" medium-size={columnSize} class="slds-m-bottom_medium">
+              <template if:false={isHiringManager}>
+                <div class="detail-card">
+                  <div class="detail-card-title">
+                    <lightning-icon icon-name="utility:record_update" size="small" class="slds-m-right_xx-small"></lightning-icon>
+                    <span>Recruiter Action Center</span>
+                  </div>
+                  
+                  <div class="action-box">
+                    <!-- Update Status -->
+                    <div class="slds-form-element slds-m-bottom_medium">
+                      <lightning-combobox
+                        name="status"
+                        label="Pipeline Status Update"
+                        value={newStatus}
+                        options={statusOptions}
+                        onchange={handleStatusChange}
+                        class="recruiter-input"
+                      ></lightning-combobox>
+                    </div>
+
+                    <!-- Assign Hiring Manager -->
+                    <div class="slds-form-element slds-m-bottom_medium">
+                      <label class="slds-form-element__label slds-text-title_bold" for="manager-lookup">Assign Hiring Manager</label>
+                      <div class="slds-form-element__control lookup-container">
+                        <lightning-record-edit-form object-api-name="Employee_Referral__c">
+                          <lightning-input-field 
+                            field-name="Hiring_Manager_Assigned__c" 
+                            value={newManagerId}
+                            onchange={handleManagerChange}
+                            variant="label-hidden"
+                          ></lightning-input-field>
+                        </lightning-record-edit-form>
+                      </div>
+                    </div>
+
+                    <!-- Internal Notes -->
+                    <div class="slds-form-element slds-m-bottom_small">
+                      <lightning-textarea
+                        label="Internal Notes / Progress Summary"
+                        value={internalNote}
+                        onchange={handleNoteChange}
+                        placeholder="Log status changes, feedback, or internal observations..."
+                        rows="5"
+                        class="recruiter-input"
+                      ></lightning-textarea>
+                    </div>
+
+                    <!-- Visible to Employee Checkbox -->
+                    <div class="slds-form-element checkbox-wrapper">
+                      <lightning-input 
+                        type="checkbox" 
+                        label="Make Note Visible to Referring Employee" 
+                        checked={visibleToEmployee}
+                        onchange={handleVisibilityChange}
+                      ></lightning-input>
+                    </div>
+                  </div>
+
+                  <!-- Sidebar History Highlight -->
+                  <div class="slds-m-top_large history-sidebar">
+                    <div class="slds-text-title_caps history-header">Pipeline Activity</div>
+                    <div class="slds-box slds-theme_shade history-box slds-m-top_xx-small">
+                      <div class="slds-grid slds-grid_vertical-align-center">
+                        <lightning-icon icon-name="utility:clock" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                        <p class="slds-text-body_small">
+                          Last status activity: 
+                          <strong>
+                            <lightning-formatted-date-time value={lastStatusChange} year="numeric" month="short" day="2-digit"></lightning-formatted-date-time>
+                          </strong>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </lightning-layout-item>
+            
+          </lightning-layout>
+        </template>
+      </div>
+
+      <!-- Sticky Modal Footer controls -->
+      <footer class="slds-modal__footer sticky-footer">
+        <lightning-button label="Cancel" onclick={handleClose} class="slds-m-right_x-small"></lightning-button>
+        <template if:false={isHiringManager}>
+          <lightning-button label="Save Changes" variant="brand" onclick={handleSave} disabled={isSaveDisabled}></lightning-button>
+        </template>
+      </footer>
+    </div>
+  </section>
+
+  <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

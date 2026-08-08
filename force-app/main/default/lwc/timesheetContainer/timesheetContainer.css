@@ -1,0 +1,442 @@
+/* timesheetContainer — Premium Timesheet Workspace */
+
+:host {
+    display: block;
+    font-family: var(--app-font-family);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+.font-weight-bold {
+    font-weight: 700;
+}
+
+/* Week header bar */
+.week-header-container {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    padding: 1.25rem 1.75rem !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 4px 18px rgba(15, 23, 42, 0.04) !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.week-header-container:hover {
+    box-shadow: 0 4px 6px rgba(15, 23, 42, 0.05), 0 10px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Week navigation elements */
+.week-range-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+}
+
+.week-nav-btn {
+    --slds-c-button-color-border: #cbd5e1;
+    --slds-c-button-color-background: #ffffff;
+    --slds-c-button-color-text: #64748b;
+    --slds-c-button-radius-border: 50%;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.week-nav-btn:hover {
+    --slds-c-button-color-border: #94a3b8;
+    --slds-c-button-color-text: #0f172a;
+    transform: scale(1.05);
+}
+
+/* Day selector scrollable container */
+.button-group-overflow {
+    overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.button-group-overflow::-webkit-scrollbar {
+    display: none;
+}
+
+/* Day pill button group - Segmented Control */
+.day-bar-group {
+    display: flex;
+    width: 100%;
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+    min-width: 500px;
+}
+
+.day-bar-group button {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.25rem;
+    line-height: 1.25;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
+.day-bar-group button:hover {
+    color: #0f172a;
+    background: rgba(15, 23, 42, 0.04);
+}
+
+/* Active segmented control tab */
+.day-bar-group button.slds-is-active,
+.day-bar-group button.active-day {
+    background: #ffffff !important;
+    color: #2563eb !important;
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04) !important;
+}
+
+@media (max-width: 480px) {
+    .day-bar-group button {
+        padding: 0.375rem 0;
+        font-size: 0.75rem;
+    }
+}
+
+/* Total hours pill */
+.total-hours-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.4;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    transition: all 0.2s ease;
+}
+
+.total-hours-pill:hover {
+    background: #dbeafe;
+    transform: translateY(-1px);
+}
+
+.total-hours-icon {
+    --slds-c-icon-color-foreground: #2563eb;
+}
+
+/* Add entry button */
+.add-entry-btn {
+    --slds-c-button-brand-color-background: #2563eb;
+    --slds-c-button-brand-color-border: #2563eb;
+    --slds-c-button-brand-color-background-hover: #1d4ed8;
+    --slds-c-button-brand-color-border-hover: #1d4ed8;
+    --slds-c-button-brand-color-text: #ffffff;
+    --slds-c-button-radius-border: 8px;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.add-entry-btn:hover {
+    transform: translateY(-2.5px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+/* Unsaved warning banner styling */
+.unsaved-warning-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 0.625rem 1rem;
+    margin-bottom: 1rem;
+    color: #b45309;
+}
+
+.unsaved-warning-icon {
+    --slds-c-icon-color-foreground: #b45309;
+}
+
+.unsaved-warning-text {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Modal Form Styles */
+.modal-form-container {
+    padding: 0.5rem;
+}
+
+.custom-form-field {
+    --slds-c-input-radius-border: 8px;
+    --slds-c-textarea-radius-border: 8px;
+    --slds-c-combobox-radius-border: 8px;
+}
+
+.check-col {
+    padding-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .check-col {
+        padding-top: 0.5rem;
+    }
+}
+
+.custom-checkbox {
+    --slds-c-checkbox-radius-border: 4px;
+}
+
+.modal-footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.modal-cancel-btn {
+    border-radius: 8px !important;
+    font-weight: 600;
+}
+
+.modal-save-btn {
+    background: #2563eb !important;
+    border-color: #2563eb !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.modal-save-btn:hover {
+    background: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+}
+
+/* Billable hours pill */
+.billable-hours-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.4;
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    transition: all 0.2s ease;
+}
+
+.billable-hours-pill:hover {
+    background: #d1fae5;
+    transform: translateY(-1px);
+}
+
+.billable-hours-icon {
+    --slds-c-icon-color-foreground: #059669;
+}
+
+/* Premium Enterprise Timesheet Table */
+.timesheet-table-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 4px 18px rgba(15, 23, 42, 0.04);
+    overflow-x: auto;
+    width: 100%;
+}
+
+.enterprise-timesheet-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: inherit;
+    font-size: 0.875rem;
+    color: #1e293b;
+}
+
+.enterprise-timesheet-table th {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: left;
+}
+
+.enterprise-timesheet-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.timesheet-row {
+    transition: background-color 0.2s ease;
+}
+
+.timesheet-row:hover {
+    background-color: #f8fafc;
+}
+
+.timesheet-row:last-child td {
+    border-bottom: none;
+}
+
+/* Date Badge Style */
+.date-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.125rem;
+}
+
+.date-weekday {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.date-day {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* Project Info Style */
+.project-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.project-name {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.project-code {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* Category Pill */
+.category-pill {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+}
+
+/* Billable Badges */
+.pill-billable {
+    display: inline-block;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+    border-radius: 12px;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.pill-nonbillable {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Hours cell */
+.hours-val {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 0.95rem;
+}
+
+/* Description Text */
+.desc-text {
+    display: block;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #475569;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    color: #0f172a;
+    background-color: #f1f5f9;
+}
+
+.edit-btn:hover {
+    color: #2563eb;
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.delete-btn:hover {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border-color: #fee2e2;
+}
+
+.action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.action-icon {
+    --slds-c-icon-color-foreground: currentColor;
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+  <apiVersion>66.0</apiVersion>
+  <description>Status Update Modal - allows updating referral status for one or more records</description>
+  <isExposed>false</isExposed>
+  <masterLabel>Status Update Modal</masterLabel>
+</LightningComponentBundle>

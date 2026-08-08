@@ -1,0 +1,269 @@
+<template>
+  <!-- Premium Recruiter Workspace Header Banner -->
+  <div class="workspace-header slds-m-bottom_large">
+    <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+      <div class="header-left">
+        <h1 class="workspace-title">{workspaceTitle}</h1>
+        <p class="workspace-subtitle">Track, evaluate, and manage candidate referrals in real-time</p>
+      </div>
+      <div class="header-right">
+        <lightning-button-icon icon-name="utility:refresh" variant="border-filled" onclick={loadReferrals} alternative-text="Refresh Referrals" class="slds-m-left_small"></lightning-button-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Real Salesforce Recruiter Analytics Cards -->
+  <div class="slds-grid slds-wrap slds-gutters_small slds-m-bottom_large stats-container">
+    <!-- Total Referrals -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="recruiter-stat-card total" onclick={handleCardClick} data-card-type="total">
+        <div class="stat-icon-wrapper total">
+          <lightning-icon icon-name="utility:groups" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{totalReferrals}</span>
+          <span class="stat-label">Total Referrals</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Active Candidates -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="recruiter-stat-card active" onclick={handleCardClick} data-card-type="active">
+        <div class="stat-icon-wrapper active">
+          <lightning-icon icon-name="utility:sync" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{activeCandidates}</span>
+          <span class="stat-label">Active Cases</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interviews Scheduled -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="recruiter-stat-card interview" onclick={handleCardClick} data-card-type="interview">
+        <div class="stat-icon-wrapper interview">
+          <lightning-icon icon-name="utility:chat" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{interviewsScheduled}</span>
+          <span class="stat-label">Interviews</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hired Candidates -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="recruiter-stat-card hired" onclick={handleCardClick} data-card-type="hired">
+        <div class="stat-icon-wrapper hired">
+          <lightning-icon icon-name="utility:like" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{hiredCount}</span>
+          <span class="stat-label">Hired Candidates</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Reviews -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-m-bottom_small">
+      <div class="recruiter-stat-card pending" onclick={handleCardClick} data-card-type="pending">
+        <div class="stat-icon-wrapper pending">
+          <lightning-icon icon-name="utility:clock" size="small"></lightning-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{pendingReviewsCount}</span>
+          <span class="stat-label">Pending Reviews</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status View Tabs -->
+  <div class="slds-tabs_default tabs-container slds-m-bottom_medium">
+    <ul class="slds-tabs_default__nav" role="tablist">
+      <template for:each={statusViews} for:item="view">
+        <li key={view.value} class="slds-tabs_default__item" role="presentation">
+          <a
+            class={view.linkClass}
+            href="javascript:void(0);"
+            role="tab"
+            onclick={handleStatusViewChange}
+            data-status={view.value}
+          >
+            <span class="tab-label-text">{view.label}</span>
+            <span class="tab-count-badge">{view.count}</span>
+          </a>
+        </li>
+      </template>
+    </ul>
+  </div>
+
+  <!-- Sticky / Floating Bulk Actions Bar -->
+  <template if:true={hasSelectedRows}>
+    <div class="bulk-actions-floating-bar slds-grid slds-grid_vertical-align-center slds-grid_align-spread slds-p-around_medium slds-m-bottom_medium">
+      <div class="slds-grid slds-grid_vertical-align-center">
+        <lightning-icon icon-name="utility:info" size="small" variant="success" class="slds-m-right_small"></lightning-icon>
+        <div>
+          <span class="bulk-title">Bulk Actions</span>
+          <span class="bulk-badge slds-m-left_small">{selectedRowIds.length} Selected</span>
+        </div>
+      </div>
+      <div class="slds-grid slds-wrap actions-btn-group">
+        <lightning-button
+          label="Update Status"
+          onclick={showBulkStatusUpdate}
+          variant="brand-outline"
+          icon-name="utility:record_update"
+          class="slds-m-right_small"
+        ></lightning-button>
+        <lightning-button
+          label="Assign Hiring Manager"
+          onclick={showBulkAssignManager}
+          variant="brand-outline"
+          icon-name="utility:user"
+          class="slds-m-right_small"
+        ></lightning-button>
+        <lightning-button
+          label="Add Comment"
+          onclick={showBulkAddComment}
+          variant="brand-outline"
+          icon-name="utility:comments"
+        ></lightning-button>
+      </div>
+    </div>
+  </template>
+
+  <!-- Content Area -->
+  <div class="slds-m-top_large">
+    <!-- Loading State -->
+    <div if:true={isLoading} class="slds-is-relative slds-p-vertical_medium">
+      <lightning-spinner alternative-text="Loading referrals" size="large"></lightning-spinner>
+    </div>
+
+    <!-- Error State -->
+    <template if:true={hasError}>
+      <lightning-card>
+        <div class="slds-box slds-theme_alert-texture slds-theme_alert_error">
+          <h3 class="slds-text-heading_small slds-m-bottom_small">
+            <lightning-icon icon-name="utility:error" size="small"></lightning-icon>
+            Unable to Load Referrals
+          </h3>
+          <p class="slds-text-body_regular">{errorMessage}</p>
+          <lightning-button label="Retry" onclick={loadReferrals} class="slds-m-top_medium"></lightning-button>
+        </div>
+      </lightning-card>
+    </template>
+
+    <!-- Referrals Table -->
+    <template if:true={showReferralTable}>
+      <c-reusable-datatable
+        title={selectedStatusLabel}
+        records={filteredReferrals}
+        columns={datatableColumns}
+        row-actions={referralRowActions}
+        page-size="15"
+        enable-search
+        enable-row-selection
+        enable-row-actions
+        show-pagination
+        onrowaction={handleRowAction}
+        onselectionchange={handleSelectionChange}
+      ></c-reusable-datatable>
+    </template>
+  </div>
+
+  <!-- Manage Referral Modal -->
+  <template if:true={showManageModal}>
+    <c-referral-management-modal
+      referral-id={selectedReferralId}
+      onclose={closeManageModal}
+      onsave={handleManageSave}
+    ></c-referral-management-modal>
+  </template>
+
+  <!-- Bulk Status Update Modal -->
+  <template if:true={showStatusUpdateModal}>
+    <c-status-update-modal
+      referral-ids={bulkEditIds}
+      current-status={selectedStatus}
+      onclose={closeStatusUpdateModal}
+      onupdate={handleStatusUpdate}
+    ></c-status-update-modal>
+  </template>
+
+  <!-- Bulk Manager Assignment Modal -->
+  <template if:true={showManagerModal}>
+    <c-manager-assignment-modal
+      referral-ids={bulkEditIds}
+      onclose={closeManagerModal}
+      onassign={handleManagerAssign}
+    ></c-manager-assignment-modal>
+  </template>
+
+  <!-- Bulk Comment Modal -->
+  <template if:true={showCommentModal}>
+    <c-referral-comment-modal
+      referral-ids={bulkEditIds}
+      onclose={closeCommentModal}
+      onsuccess={handleCommentSuccess}
+    ></c-referral-comment-modal>
+  </template>
+
+  <!-- Reusable Drilldown Modal -->
+  <template if:true={showDrilldownModal}>
+    <div class="modal-backdrop" onclick={closeDrilldownModal}></div>
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large drilldown-modal" aria-modal="true" aria-labelledby="drilldown-heading">
+      <div class="slds-modal__container">
+        
+        <!-- Premium Header Banner -->
+        <header class="modal-header-banner">
+          <lightning-button-icon
+            icon-name="utility:close"
+            onclick={closeDrilldownModal}
+            alternative-text="Close"
+            variant="bare"
+            class="slds-modal__close"
+            size="large"
+          ></lightning-button-icon>
+          
+          <div class="slds-grid slds-grid_vertical-align-center">
+            <div class="slds-m-right_medium">
+              <div class="candidate-avatar">
+                <lightning-icon icon-name="utility:groups" size="medium" variant="inverse"></lightning-icon>
+              </div>
+            </div>
+            <div>
+              <h2 id="drilldown-heading" class="slds-modal__title slds-hyphenate">{drilldownModalTitle}</h2>
+              <p class="slds-page-header__name-meta">
+                Drill-down pipeline view &bull; {drilldownRecords.length} Live Salesforce Records
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <!-- Modal Body -->
+        <div class="slds-modal__content slds-p-around_medium" id="drilldown-content">
+          <!-- Reusable Datatable inside Modal -->
+          <c-reusable-datatable
+            title=""
+            records={drilldownRecords}
+            columns={drilldownColumns}
+            row-actions={referralRowActions}
+            page-size="10"
+            enable-search
+            enable-row-actions
+            show-pagination
+            onrowaction={handleDrilldownRowAction}
+          ></c-reusable-datatable>
+        </div>
+
+        <!-- Modal Footer -->
+        <footer class="slds-modal__footer sticky-footer">
+          <lightning-button label="Close" onclick={closeDrilldownModal}></lightning-button>
+        </footer>
+      </div>
+    </section>
+  </template>
+</template>

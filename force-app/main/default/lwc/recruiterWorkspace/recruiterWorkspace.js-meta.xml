@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+  <apiVersion>66.0</apiVersion>
+  <description>Recruiter Workspace component for managing referral pipeline with status views, bulk actions, and candidate tracking</description>
+  <isExposed>true</isExposed>
+  <masterLabel>Recruiter Workspace</masterLabel>
+  <targets>
+    <target>lightning__AppPage</target>
+    <target>lightning__HomePage</target>
+  </targets>
+
+</LightningComponentBundle>

@@ -1,0 +1,68 @@
+/* Referral Wizard Styles */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  z-index: 9000;
+}
+
+/* SLDS Modal Centering */
+.slds-modal__container {
+  margin: 0 auto;
+  width: 90%;
+  max-width: 900px;
+}
+
+.slds-fade-in-open {
+  animation: fadeIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Job Selection */
+.slds-theme_shade {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Step Container */
+.step-container {
+  min-height: 300px;
+}
+
+/* File Input Styling */
+.slds-assistive-text {
+  position: absolute !important;
+  margin: -1px !important;
+  border: 0 !important;
+  padding: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slds-modal__container {
+    width: 95%;
+    margin: 0.5rem auto;
+  }
+}

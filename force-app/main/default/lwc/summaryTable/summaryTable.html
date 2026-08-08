@@ -1,0 +1,12 @@
+<template>
+    <!-- summaryTable: Weekly hours summary datatable -->
+    <div class="slds-table_header-fixed_container datatable-container">
+        <lightning-datatable
+            key-field="id"
+            data={rows}
+            columns={columns}
+            hide-checkbox-column="true"
+            show-row-number-column="false">
+        </lightning-datatable>
+    </div>
+</template>

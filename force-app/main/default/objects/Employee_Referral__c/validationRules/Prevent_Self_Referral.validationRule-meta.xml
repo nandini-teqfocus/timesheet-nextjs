@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Self_Referral</fullName>
+    <active>false</active>
+    <description>Reserved for self-referral prevention. Disabled because Candidate__c is not modeled as a User/Contact record, so comparing Referred_By__c to $User.Id blocks every valid employee submission.</description>
+    <errorConditionFormula>false</errorConditionFormula>
+    <errorDisplayField>Referred_By__c</errorDisplayField>
+    <errorMessage>You cannot refer yourself. Please select a different employee as the referrer.</errorMessage>
+</ValidationRule>

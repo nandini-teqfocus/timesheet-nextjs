@@ -1,0 +1,24 @@
+<template>
+    <template lwc:if={showNavigation}>
+        <!-- bottomNavigation: Sticky tab bar for mobile sizes -->
+        <nav class="bottom-nav slds-hide_medium" role="navigation">
+            <div class="slds-grid slds-grid_align-spread bottom-nav-container slds-p-horizontal_medium">
+                <template for:each={bottomNavItems} for:item="item">
+                    <a key={item.id}
+                       href="#"
+                       class={item.class}
+                       data-page={item.id}
+                       aria-selected={item.ariaSelected}
+                       onclick={handleNavClick}>
+                        <lightning-icon 
+                            icon-name={item.icon} 
+                            size="small" 
+                            class="bottom-nav-icon">
+                        </lightning-icon>
+                        <span class="bottom-nav-label slds-p-top_xx-small">{item.label}</span>
+                    </a>
+                </template>
+            </div>
+        </nav>
+    </template>
+</template>

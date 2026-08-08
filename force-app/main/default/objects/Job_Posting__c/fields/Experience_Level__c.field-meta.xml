@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Experience_Level__c</fullName>
+    <description>The required experience level for this position</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the experience level required for this role</inlineHelpText>
+    <label>Experience Level</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Entry</fullName>
+                <default>false</default>
+                <label>Entry</label>
+            </value>
+            <value>
+                <fullName>Mid</fullName>
+                <default>false</default>
+                <label>Mid</label>
+            </value>
+            <value>
+                <fullName>Senior</fullName>
+                <default>false</default>
+                <label>Senior</label>
+            </value>
+            <value>
+                <fullName>Lead</fullName>
+                <default>false</default>
+                <label>Lead</label>
+            </value>
+            <value>
+                <fullName>Manager</fullName>
+                <default>false</default>
+                <label>Manager</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

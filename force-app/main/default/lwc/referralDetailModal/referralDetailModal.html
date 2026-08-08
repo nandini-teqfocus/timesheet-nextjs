@@ -1,0 +1,80 @@
+<template>
+  <!-- Referral Detail Modal -->
+  <div class="modal-backdrop" onclick={handleClose}></div>
+  <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-modal="true">
+    <div class="slds-modal__container">
+      <!-- Modal Header -->
+      <header class="slds-modal__header">
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleClose}>
+          <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+          <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 class="slds-modal__title slds-hyphenate">Referral Details: {referralName}</h2>
+      </header>
+
+      <!-- Modal Content -->
+      <div class="slds-modal__content slds-p-around_medium">
+        <template if:true={isLoading}>
+          <div class="slds-is-relative slds-p-vertical_large">
+            <lightning-spinner alternative-text="Loading details" size="medium"></lightning-spinner>
+          </div>
+        </template>
+
+        <template if:true={referralData}>
+          <div class="slds-grid slds-wrap slds-gutters">
+            <!-- Candidate Section -->
+            <div class="slds-col slds-size_1-of-1 slds-m-bottom_medium">
+              <h3 class="slds-section__title slds-theme_shade slds-p-around_x-small">Candidate Information</h3>
+              <div class="slds-grid slds-wrap slds-m-top_small">
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_x-small">
+                  <p class="slds-text-title_caps">Name</p>
+                  <p>{candidateName}</p>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_x-small">
+                  <p class="slds-text-title_caps">Email</p>
+                  <p>{candidateEmail}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Job Section -->
+            <div class="slds-col slds-size_1-of-1 slds-m-bottom_medium">
+              <h3 class="slds-section__title slds-theme_shade slds-p-around_x-small">Job Information</h3>
+              <div class="slds-grid slds-wrap slds-m-top_small">
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_x-small">
+                  <p class="slds-text-title_caps">Title</p>
+                  <p>{jobTitle}</p>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_x-small">
+                  <p class="slds-text-title_caps">Department</p>
+                  <p>{departmentName}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Section -->
+            <div class="slds-col slds-size_1-of-1">
+              <h3 class="slds-section__title slds-theme_shade slds-p-around_x-small">Referral Tracking</h3>
+              <div class="slds-grid slds-wrap slds-m-top_small">
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_x-small">
+                  <p class="slds-text-title_caps">Current Status</p>
+                  <lightning-badge label={status}></lightning-badge>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-m-bottom_x-small">
+                  <p class="slds-text-title_caps">Submitted On</p>
+                  <p><lightning-formatted-date-time value={submissionDate}></lightning-formatted-date-time></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Modal Footer -->
+      <footer class="slds-modal__footer">
+        <lightning-button label="Close" onclick={handleClose} variant="neutral"></lightning-button>
+      </footer>
+    </div>
+  </section>
+  <div class="slds-backdrop slds-backdrop_open"></div>
+</template>
