@@ -1,5 +1,5 @@
 import { ServiceResponse } from '@/types/common.types';
-import { getSalesforceJwtAccessToken } from './sf-jwt-auth';
+import { getSalesforceJwtAccessToken, clearCachedJwtToken } from './sf-jwt-auth';
 
 const DEFAULT_INSTANCE_URL =
   process.env.SALESFORCE_INSTANCE_URL || 'https://time-sheet.my.salesforce.com';
@@ -11,7 +11,7 @@ export interface SalesforceClientOptions extends RequestInit {
 
 /**
  * Reusable server-side Salesforce REST API client.
- * Automatically injects JWT Bearer Token and resolves target Salesforce instance URL.
+ * Automatically injects JWT Bearer Token, handles 401 token invalidation retries, and resolves target Salesforce instance URL.
  */
 export async function callSalesforceRestApi<T>(
   endpoint: string,
@@ -19,6 +19,7 @@ export async function callSalesforceRestApi<T>(
 ): Promise<ServiceResponse<T>> {
   const { accessToken: explicitToken, instanceUrl: explicitInstanceUrl, ...fetchOptions } = options;
 
+  let isJwtFlow = !explicitToken;
   let activeToken = explicitToken;
   let activeInstanceUrl = explicitInstanceUrl || DEFAULT_INSTANCE_URL;
 
@@ -67,10 +68,38 @@ export async function callSalesforceRestApi<T>(
   /* eslint-enable no-console */
 
   try {
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       ...fetchOptions,
       headers,
     });
+
+    // Automatic single-retry logic on 401 Unauthorized for JWT authentication
+    if (response.status === 401 && isJwtFlow) {
+      /* eslint-disable no-console */
+      console.warn('[Salesforce Client Debug] Received 401 Unauthorized. Clearing cached JWT token and retrying once...');
+      /* eslint-enable no-console */
+      clearCachedJwtToken();
+
+      try {
+        const refreshedCredentials = await getSalesforceJwtAccessToken();
+        activeToken = refreshedCredentials.accessToken;
+        if (refreshedCredentials.instanceUrl) {
+          activeInstanceUrl = refreshedCredentials.instanceUrl;
+        }
+
+        headers['Authorization'] = `Bearer ${activeToken}`;
+        const retryUrl = `${activeInstanceUrl.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+
+        response = await fetch(retryUrl, {
+          ...fetchOptions,
+          headers,
+        });
+      } catch (retryErr) {
+        /* eslint-disable no-console */
+        console.error('[Salesforce Client Debug] Retry JWT token acquisition failed:', retryErr);
+        /* eslint-enable no-console */
+      }
+    }
 
     if (!response.ok) {
       const errorText = await response.text();

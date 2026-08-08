@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { TimesheetService } from '@/services/timesheet.service';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET(request: NextRequest) {
   try {

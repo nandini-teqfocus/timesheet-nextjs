@@ -1,3 +1,3 @@
 git add .
-git commit -m "Feat: Implement Salesforce OAuth 2.0 JWT Bearer authentication flow"
+git commit -m "Feat: Add Node.js runtime exports and automatic 401 JWT token invalidation retry"
 git push origin main

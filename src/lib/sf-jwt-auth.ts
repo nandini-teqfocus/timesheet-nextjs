@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 
+export const runtime = 'nodejs';
+
 export interface SalesforceTokenResponse {
   access_token: string;
   instance_url: string;
